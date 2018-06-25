@@ -31,13 +31,18 @@ namespace goGo
             InitializeComponent();
             cb.BindLayout(layout);
             mode.BindChessBoard(cb);
+//             layout.SetDian(1, 0, GoDianType.BLACK);
+//             layout.SetDian(0, 1, GoDianType.BLACK);
+//             layout.SetDian(2, 1, GoDianType.BLACK);
+//             layout.SetDian(1, 2, GoDianType.BLACK);
+//             layout.SetDian(0, 2, GoDianType.WHITE);
+//             layout.SetDian(1, 3, GoDianType.WHITE);
+//             layout.SetDian(2, 2, GoDianType.WHITE);
+
             layout.SetDian(1, 0, GoDianType.BLACK);
             layout.SetDian(0, 1, GoDianType.BLACK);
             layout.SetDian(2, 1, GoDianType.BLACK);
-            layout.SetDian(1, 2, GoDianType.BLACK);
-            layout.SetDian(0, 2, GoDianType.WHITE);
-            layout.SetDian(1, 3, GoDianType.WHITE);
-            layout.SetDian(2, 2, GoDianType.WHITE);
+            layout.SetDian(1, 1, GoDianType.WHITE);
         }
 
         int x_print;

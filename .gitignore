@@ -2,3 +2,5 @@
 /goGo/obj/
 /goTest/bin/
 /goTest/obj/
+/TestResults/
+*.suo

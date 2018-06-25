@@ -116,24 +116,30 @@ namespace goGo.DataEngine
             }
         }
 
-        private void CheckTiZi(GoDian dian)
+        private bool CheckTiZi(GoDian dian)
         {
+            bool TiZi = false;
             if (dian.UP != null && dian.UP.Qi == 0)
             {
+                TiZi = true;
                 RemoveBlock(dian.UP.Block);
             }
             if (dian.DOWN != null && dian.DOWN.Qi == 0)
             {
+                TiZi = true;
                 RemoveBlock(dian.DOWN.Block);
             }
             if (dian.LEFT != null && dian.LEFT.Qi == 0)
             {
+                TiZi = true;
                 RemoveBlock(dian.LEFT.Block);
             }
             if (dian.RIGHT != null && dian.RIGHT.Qi == 0)
             {
+                TiZi = true;
                 RemoveBlock(dian.RIGHT.Block);
             }
+            return TiZi;
         }
 
         private void RemoveBlock(GoBlock block)
@@ -200,7 +206,15 @@ namespace goGo.DataEngine
 
             if (autoTake_)
             {
-                CheckTiZi(dian);
+                if (dian.Qi == 0 && !CheckTiZi(dian))
+                {
+                    RemoveZi(dian);
+                    return false;
+                }
+                else
+                {
+                    CheckTiZi(dian);
+                }
             }
 
             if (DianChanged != null)

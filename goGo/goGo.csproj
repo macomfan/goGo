@@ -103,7 +103,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Image1.png" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
