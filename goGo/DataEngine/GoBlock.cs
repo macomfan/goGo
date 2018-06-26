@@ -27,9 +27,41 @@ namespace goGo.DataEngine
             int index = dian.Coord.GetIndex(size_);
             dianMap_.Add(index, dian);
             dian.Block = this;
+            DetectNeighborBlock(dian, dian.UP);
+            DetectNeighborBlock(dian, dian.DOWN);
+            DetectNeighborBlock(dian, dian.LEFT);
+            DetectNeighborBlock(dian, dian.RIGHT);
+            CleanQi();
         }
 
-        public void Merge(GoBlock block)
+        private bool DetectNeighborBlock(GoDian dian, GoDian nextDian)
+        {
+            if (nextDian == null || nextDian.Type == GoDianType.EMPTY)
+            {
+                return false;
+            }
+            else if (nextDian.Block == null || nextDian.Block.DianNumber == 0)
+            {
+                //Error need refresh
+                throw new Exception("ERROR: The Block of Zi is NULL or EMPTY");
+            }
+            else if (nextDian.Block.Type != dian.Type)
+            {
+                nextDian.Block.CleanQi();
+                return false;
+            }
+            else if (dian.Block != nextDian.Block)
+            {
+                dian.Block.Merge(nextDian.Block);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void Merge(GoBlock block)
         {
             if (block.Type != type_)
             {
@@ -94,6 +126,10 @@ namespace goGo.DataEngine
             ClearQiOfBlock(dian.DOWN);
             ClearQiOfBlock(dian.LEFT);
             ClearQiOfBlock(dian.RIGHT);
+            if (DianNumber != 0)
+            {
+                CleanQi();
+            }
             return true;
         }
 
@@ -161,7 +197,7 @@ namespace goGo.DataEngine
             return qi;
         }
 
-        public void CleanQi()
+        private void CleanQi()
         {
             qi_ = -1;
         }

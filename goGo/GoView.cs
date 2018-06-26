@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 using goGo.DataEngine;
 using goGo.Painter;
@@ -51,11 +52,29 @@ namespace goGo
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
+//             Font font = new Font("Verdana", 15);
+//             SizeF size = e.Graphics.MeasureString("A", font);
+//             Bitmap a = new Bitmap((int)size.Width+10, (int)size.Height+10);
+//             Graphics bg = Graphics.FromImage(a);
+//             bg.DrawString("A", font, new SolidBrush(Color.Red), 0.0f, 0.0f);
+//             e.Graphics.DrawImage(a, 0.0f, 0.0f, size.Width+100.0f, size.Height+100.0f);
+//             Matrix matrix = new Matrix();
+//             matrix.Scale(5.0f, 5.0f);
+//             Graphics g = e.Graphics;
+//             g.Transform = matrix;
+//             g.DrawString("AAA", this.Font, Brushes.Black, 50,50);
+//             g.ResetTransform();
+//             e.Graphics.DrawString("A", new Font("Verdana", 12), new SolidBrush(Color.Red), 250, 250);
+            
+            Font font = new Font("Verdana", 12, GraphicsUnit.Pixel);
+            e.Graphics.DrawString(string.Format("({0},{1})", x_print, y_print), font, new SolidBrush(Color.Red), new PointF(0.0f, 0.0f));
+            //e.Graphics.DrawString(string.Format("({0},{1})", x_print, y_print), font, new SolidBrush(Color.Red), new Rectangle(0, 0,100,100));
+
             e.Graphics.TranslateTransform(xOffset_, yOffset_);
-            cb.Draw(e.Graphics, 0, 0);
+            cb.DrawBoard(e.Graphics);
             cb.DrawSelected(e.Graphics);
             cb.DrawLayout(e.Graphics);
-            e.Graphics.DrawString(string.Format("({0},{1})",x_print,y_print), new Font("Verdana", 12), new SolidBrush(Color.Red), new PointF(1.0f, 1.0f));
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -70,7 +89,6 @@ namespace goGo
                 y_print = coord.Col;
                 cb.SelectedCoord = coord;
                 int qi = cb.Layout.GetQi(coord.Row, coord.Col);
-                System.Diagnostics.Debug.WriteLine("Qi: {0}", qi);
                 this.Invalidate();
                 //mode.o;
             }

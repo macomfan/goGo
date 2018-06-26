@@ -23,6 +23,11 @@ namespace goTest
             }
         }
 
+        public void SetDian(GoLayout layout, int row, int col, GoDianType type)
+        {
+            layout.SetDian(new GoCoord(row, col), type);
+        }
+
         public void SetDianAndCheckQi(GoLayout layout, int row, int col, GoDianType type, int qi)
         {
             layout.SetDian(new GoCoord(row, col), type);
@@ -152,6 +157,24 @@ namespace goTest
             CheckQi(layout, 1, 0, 5);
             CheckQi(layout, 1, 1, 0);
             CheckQi(layout, 0, 0, 0);
+            CheckVisitStatus(layout);
+        }
+
+        [TestMethod]
+        public void TestTiZi()
+        {
+            GoLayout layout = new GoLayout();
+            layout.AutoTake = true;
+            SetDian(layout, 0, 1, GoDianType.BLACK);
+            SetDian(layout, 0, 2, GoDianType.BLACK);
+            SetDian(layout, 1, 0, GoDianType.BLACK);
+            SetDian(layout, 1, 3, GoDianType.BLACK);
+            SetDian(layout, 1, 1, GoDianType.WHITE);
+            SetDian(layout, 1, 2, GoDianType.WHITE);
+            SetDian(layout, 2, 1, GoDianType.BLACK);
+            SetDian(layout, 2, 2, GoDianType.BLACK);
+            CheckDian(layout, 1, 1, GoDianType.EMPTY);
+            CheckDian(layout, 1, 2, GoDianType.EMPTY);
             CheckVisitStatus(layout);
         }
 

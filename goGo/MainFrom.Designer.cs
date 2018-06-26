@@ -56,7 +56,7 @@
             this.splitPanelMain.Panel1MinSize = 0;
             this.splitPanelMain.Panel2MinSize = 100;
             this.splitPanelMain.Size = new System.Drawing.Size(719, 415);
-            this.splitPanelMain.SplitterDistance = 522;
+            this.splitPanelMain.SplitterDistance = 528;
             this.splitPanelMain.SplitterWidth = 1;
             this.splitPanelMain.TabIndex = 1;
             // 
@@ -67,7 +67,7 @@
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(522, 415);
+            this.mainPanel.Size = new System.Drawing.Size(528, 415);
             this.mainPanel.TabIndex = 0;
             // 
             // menuMain
@@ -94,7 +94,7 @@
             this.mainView1.Location = new System.Drawing.Point(0, 0);
             this.mainView1.Margin = new System.Windows.Forms.Padding(0);
             this.mainView1.Name = "mainView1";
-            this.mainView1.Size = new System.Drawing.Size(518, 411);
+            this.mainView1.Size = new System.Drawing.Size(524, 411);
             this.mainView1.TabIndex = 0;
             // 
             // MainFrom

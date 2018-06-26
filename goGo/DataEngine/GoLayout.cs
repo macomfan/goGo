@@ -70,6 +70,13 @@ namespace goGo.DataEngine
             }
         }
 
+        public bool PushStep(GoStep step)
+        {
+            return SetDian(step.Coord, step.Type);
+        }
+
+
+
         public static GoStar[] GetStars()
         {
             return stars_;
@@ -87,33 +94,6 @@ namespace goGo.DataEngine
                 return null;
             }
             return layout_[coord.GetIndex(SIZE)];
-        }
-
-        private bool DetectAndAddDianToBlock(GoDian dian, GoDian nextDian)
-        {
-            if (nextDian == null || nextDian.Type == GoDianType.EMPTY)
-            {
-                return false;
-            }
-            else if (nextDian.Block == null || nextDian.Block.DianNumber == 0)
-            {
-                //Error need refresh
-                throw new Exception("ERROR: The Block of Zi is NULL or EMPTY");
-            }
-            else if (nextDian.Block.Type != dian.Type)
-            {
-                nextDian.Block.CleanQi();
-                return false;
-            }
-            else if (dian.Block != nextDian.Block)
-            {
-                dian.Block.Merge(nextDian.Block);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private bool CheckTiZi(GoDian dian)
@@ -159,11 +139,6 @@ namespace goGo.DataEngine
             }
             GoBlock block = dian.Block;
             block.RemoveDian(dian);
-            if (block.DianNumber != 0)
-            {
-                //recalculate qi
-                dian.Block.CleanQi();
-            }
             dian.Type = GoDianType.EMPTY;
         }
 
@@ -194,16 +169,8 @@ namespace goGo.DataEngine
                 }
                 RemoveZi(dian);
             }
-
             dian.Type = type;
             dian.Block = new GoBlock(SIZE, dian);
-            // Add dian into EMPTY
-            DetectAndAddDianToBlock(dian, dian.UP);
-            DetectAndAddDianToBlock(dian, dian.RIGHT);
-            DetectAndAddDianToBlock(dian, dian.DOWN);
-            DetectAndAddDianToBlock(dian, dian.LEFT);
-            dian.Block.CleanQi();
-
             if (autoTake_)
             {
                 if (dian.Qi == 0 && !CheckTiZi(dian))
