@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using goGo.DataEngine;
-
+using SGFParser;
 namespace goGo
 {
     public partial class MainFrom : Form
@@ -20,6 +20,8 @@ namespace goGo
         private void button1_Click(object sender, EventArgs e)
         {
 
+
+            //parser.
         }
     }
 }

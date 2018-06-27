@@ -33,8 +33,10 @@
             this.menuMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainView1 = new goGo.GoView();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitPanelMain)).BeginInit();
             this.splitPanelMain.Panel1.SuspendLayout();
+            this.splitPanelMain.Panel2.SuspendLayout();
             this.splitPanelMain.SuspendLayout();
             this.mainPanel.SuspendLayout();
             this.menuMain.SuspendLayout();
@@ -54,9 +56,13 @@
             this.splitPanelMain.Panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.splitPanelMain.Panel1.Controls.Add(this.mainPanel);
             this.splitPanelMain.Panel1MinSize = 0;
+            // 
+            // splitPanelMain.Panel2
+            // 
+            this.splitPanelMain.Panel2.Controls.Add(this.button1);
             this.splitPanelMain.Panel2MinSize = 100;
             this.splitPanelMain.Size = new System.Drawing.Size(719, 415);
-            this.splitPanelMain.SplitterDistance = 528;
+            this.splitPanelMain.SplitterDistance = 531;
             this.splitPanelMain.SplitterWidth = 1;
             this.splitPanelMain.TabIndex = 1;
             // 
@@ -67,7 +73,7 @@
             this.mainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Size = new System.Drawing.Size(528, 415);
+            this.mainPanel.Size = new System.Drawing.Size(531, 415);
             this.mainPanel.TabIndex = 0;
             // 
             // menuMain
@@ -94,8 +100,18 @@
             this.mainView1.Location = new System.Drawing.Point(0, 0);
             this.mainView1.Margin = new System.Windows.Forms.Padding(0);
             this.mainView1.Name = "mainView1";
-            this.mainView1.Size = new System.Drawing.Size(524, 411);
+            this.mainView1.Size = new System.Drawing.Size(527, 411);
             this.mainView1.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(83, 60);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainFrom
             // 
@@ -108,6 +124,7 @@
             this.Name = "MainFrom";
             this.Text = "Form1";
             this.splitPanelMain.Panel1.ResumeLayout(false);
+            this.splitPanelMain.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitPanelMain)).EndInit();
             this.splitPanelMain.ResumeLayout(false);
             this.mainPanel.ResumeLayout(false);
@@ -125,6 +142,7 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private GoView mainView1;
         private System.Windows.Forms.Panel mainPanel;
+        private System.Windows.Forms.Button button1;
 
     }
 }

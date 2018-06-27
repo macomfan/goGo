@@ -31,12 +31,15 @@ namespace goGo.Painter
             SolidBrush blackBrush = new SolidBrush(Color.Black);
             font_ = new Font("Verdana", range * 0.4f, GraphicsUnit.Pixel);
 
+            g.DrawLine(new Pen(new SolidBrush(Color.Red)), 0, margin, 200, margin);
+            g.DrawLine(new Pen(new SolidBrush(Color.Red)), 0, margin + range, 200, margin + range);
+
             float halfRange = range / 2.0f;
             for (int i = 0; i < size_; i++)
             {
                 {
                     float x = horizontalStart + i * step;
-                    float y = halfRange + margin;
+                    float y = margin;
                     SizeF size = g.MeasureString(horizontal_[i], font_);
                     g.DrawString(horizontal_[i], font_, new SolidBrush(Color.Black), x - size.Width / 2.0f, y - size.Height / 2.0f);
                     //g.FillEllipse(blackBrush, x - 2, y - 2, 4, 4);
