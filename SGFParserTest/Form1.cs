@@ -16,6 +16,10 @@ namespace SGFParserTest
         public Form1()
         {
             InitializeComponent();
+//             SGFBufferParser test = new SGFBufferParser();
+//             string value = test.TestProcessPropertyValue("[A][B\\]] \r\n[C]  ");
+//             System.Diagnostics.Debug.WriteLine(value);
+
             SGF_Parser parser = new SGF_Parser();
             //parser.OpenSGF(@"C:\DEV\SGF\examples\simple0.sgf");
             parser.OpenSGF(@"C:\DEV\SGF\examples\ff4_ex.sgf");
@@ -61,7 +65,12 @@ namespace SGFParserTest
             listView1.Clear();
             foreach (SGF_Property p in node.GetProperties())
             {
-                listView1.Items.Add(p.Name + " : " + p.Value);
+                string value = string.Empty;
+                foreach (string s in p.Values)
+                {
+                    value += s;
+                }
+                listView1.Items.Add(p.Name + " : " + value);
             }
             
         }

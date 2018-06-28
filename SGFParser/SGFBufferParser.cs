@@ -6,13 +6,11 @@ using System.IO;
 
 namespace SGFParser
 {
-    class SGFBufferParser
+    public class SGFBufferParser
     {
         private byte[] buffer_ = null;
         private int index_ = 0;
         private int length_ = 0;
-        private SGF_Node currentNode_ = null;
-        private SGF_Property currentProperty_ = null;
 
         public SGFBufferParser(Stream stream)
         {
@@ -48,6 +46,62 @@ namespace SGFParser
             }
         }
 
+        private int FindNextPropertyValueEnd()
+        {
+            for (int i = index_; i < length_; i++)
+            {
+                char ch = (char)buffer_[i];
+                if (ch == '\\')
+                {
+                    if (i + 1 < length_)
+                    {
+                        char chAdd1 = (char)buffer_[i + 1];
+                        if (chAdd1 == ']')
+                        {
+                            i++;
+                            continue;
+                        }
+                    }
+                }
+                else if (ch == ']')
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private void ProcessPropertyValue(SGF_Property property)
+        {
+            if (PeekChar() != '[')
+            {
+                return;
+            }
+            bool isContinue = true;
+            do
+            {
+                int indexPropertyValueEnd = FindNextPropertyValueEnd();
+                char[] value = ReadChars(indexPropertyValueEnd - Index + 1);
+                string valueString = new string(value);
+                property.AddValue(valueString);
+                while (!EOF)
+                {
+                    char ch = PeekChar();
+                    if (IsUnusedChar(ch))
+                    {
+                        ReadChar();
+                        continue;
+                    }
+                    else if (ch != '[' || IsControlChar(ch))
+                    {
+                        isContinue = false;
+                    }
+                    break;
+                }
+            } while (!EOF && isContinue);
+            return;
+        }
+
         public SGF_Node ProcessNode(SGF_Node parent)
         {
             SGF_Node newNode = new SGF_Node();
@@ -67,19 +121,12 @@ namespace SGFParser
                 int indexPropertyValueStart = FindToPropertyValueStart();
                 if (indexPropertyValueStart == -1)
                 {
-                    // No Property
+                    break;
                 }
                 char[] name = ReadChars(indexPropertyValueStart - Index);
                 string nameString = new string(name);
-                int indexPropertyValueEnd = FindToPropertyValueEnd();
-                if (indexPropertyValueEnd == -1)
-                {
-                    // No Property value
-                }
-                char[] value = ReadChars(indexPropertyValueEnd - Index + 1);
-                string valueString = new string(value);
-                System.Diagnostics.Debug.WriteLine(string.Format("Property: {0} - {1}", nameString, valueString));
-                SGF_Property propertry = new SGF_Property(nameString, valueString);
+                SGF_Property propertry = new SGF_Property(nameString);
+                ProcessPropertyValue(propertry);
                 newNode.AddProperty(propertry);
             }
             return newNode;
@@ -103,12 +150,7 @@ namespace SGFParser
 
         private int FindToPropertyValueStart()
         {
-            return FindToPropertyValueStart(index_);
-        }
-
-        private int FindToPropertyValueStart(int index)
-        {
-            for (int i = index; i < length_; i++)
+            for (int i = index_; i < length_; i++)
             {
                 char ch = (char)buffer_[i];
                 if (IsControlChar(ch))
@@ -123,50 +165,6 @@ namespace SGFParser
             return -1;
         }
 
-        private int FindToPropertyValueEnd()
-        {
-            return FindToPropertyValueEnd(index_);
-        }
-
-        private int FindToPropertyValueEnd(int index)
-        {
-            for (int i = index; i < length_; i++)
-            {
-                char ch = (char)buffer_[i];
-                if (ch == '\\')
-                {
-                    if (i + 1 < length_)
-                    {
-                        char chAdd1 = (char)buffer_[i + 1];
-                        if (chAdd1 == ']')
-                        {
-                            i++;
-                            continue;
-                        }
-                    }
-                }
-                else if (ch == ']')
-                {
-                    for (int j = i + 1; j < length_; j++)
-                    {
-                        char chAdd1 = (char)buffer_[j];
-                        if (IsUnusedChar(chAdd1))
-                        {
-                            continue;
-                        }
-                        else if (chAdd1 != '[')
-                        {
-                            return i;
-                        }
-                        else
-                        {
-                            return FindToPropertyValueEnd(j);
-                        }
-                    }
-                }
-            }
-            return -1;
-        }
         private bool IsUnusedChar(char ch)
         {
             if (ch == ' ' || ch == (char)0x0D || ch == (char)0x0A)
@@ -198,20 +196,9 @@ namespace SGFParser
             return ' ';
         }
 
-        public byte ReadByte()
-        {
-            return buffer_[index_++];
-        }
-
         public char ReadChar()
         {
             return (char)buffer_[index_++];
-        }
-
-
-        public char PeekCharAt(int index)
-        {
-            return (char)buffer_[index];
         }
 
         public char PeekChar()
@@ -221,7 +208,7 @@ namespace SGFParser
 
         public char[] ReadChars(int count)
         {
-            if (index_ + count >= length_)
+            if (index_ + count > length_)
             {
                 SGFException.Throw("out of bounds");
             }

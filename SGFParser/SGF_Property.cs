@@ -8,22 +8,26 @@ namespace SGFParser
     public class SGF_Property
     {
         private string name_ = string.Empty;
-        private string value_ = string.Empty;
+        private List<string> values_ = new List<string>();
 
         public string Name
         {
             get { return name_; }
         }
 
-        public string Value
-        {
-            get { return value_; }
-        }
-
-        public SGF_Property(string name, string value)
+        public SGF_Property(string name)
         {
             name_ = name;
-            value_ = value;
+        }
+
+        public void AddValue(string value)
+        {
+            values_.Add(value);
+        }
+
+        public List<string> Values
+        {
+            get { return values_; }
         }
     }
 }
