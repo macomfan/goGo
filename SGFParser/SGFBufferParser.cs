@@ -31,10 +31,10 @@ namespace SGFParser
             SGF_Node currentNode = parent;
             while (!EOF)
             {
-                char ch = ReadChar();
+                char ch = ReadToNextControlChar();
                 if (ch == ';')
                 {
-                    currentNode = ProcessNote(currentNode);
+                    currentNode = ProcessNode(currentNode);
                 }
                 else if (ch == '(')
                 {
@@ -48,43 +48,74 @@ namespace SGFParser
             }
         }
 
-        public SGF_Node ProcessNote(SGF_Node parent)
+        public SGF_Node ProcessNode(SGF_Node parent)
         {
             SGF_Node newNode = new SGF_Node();
             parent.AddNode(newNode);
             while (!EOF)
             {
-                int indexPropertyValueStart = IndexOfNext('[');
+                char ch = PeekChar();
+                if (IsControlChar(ch))
+                {
+                    break;
+                }
+                else if (IsUnusedChar(ch))
+                {
+                    ReadChar();
+                    continue;
+                }
+                int indexPropertyValueStart = FindToPropertyValueStart();
                 if (indexPropertyValueStart == -1)
                 {
-                    // Error
+                    // No Property
                 }
                 char[] name = ReadChars(indexPropertyValueStart - Index);
                 string nameString = new string(name);
-                int indexPropertyValueEnd = IndexOfNext(']');
+                int indexPropertyValueEnd = FindToPropertyValueEnd();
                 if (indexPropertyValueEnd == -1)
                 {
-                    // Error
+                    // No Property value
                 }
                 char[] value = ReadChars(indexPropertyValueEnd - Index + 1);
                 string valueString = new string(value);
                 System.Diagnostics.Debug.WriteLine(string.Format("Property: {0} - {1}", nameString, valueString));
                 SGF_Property propertry = new SGF_Property(nameString, valueString);
                 newNode.AddProperty(propertry);
-                char ch = PeekChar();
-                if (ch == ';' || ch == '(' || ch == ')')
-                {
-                    break;
-                }
             }
             return newNode;
         }
 
-        private int IndexOfNext(char ch)
+        public void Parse(SGF_Node root)
         {
-            for (int i = index_; i < length_; i++ )
+            while (!EOF)
             {
-                if (buffer_[i] == ch)
+                char ch = ReadToNextControlChar();
+                if (ch == '(')
+                {
+                    ProcessTree(root);
+                }
+                else
+                {
+                    // Error
+                }
+            }
+        }
+
+        private int FindToPropertyValueStart()
+        {
+            return FindToPropertyValueStart(index_);
+        }
+
+        private int FindToPropertyValueStart(int index)
+        {
+            for (int i = index; i < length_; i++)
+            {
+                char ch = (char)buffer_[i];
+                if (IsControlChar(ch))
+                {
+                    return -1;
+                }
+                else if (ch == '[')
                 {
                     return i;
                 }
@@ -92,16 +123,79 @@ namespace SGFParser
             return -1;
         }
 
-        public void Parse(SGF_Node root)
+        private int FindToPropertyValueEnd()
         {
-            while (!EOF)
+            return FindToPropertyValueEnd(index_);
+        }
+
+        private int FindToPropertyValueEnd(int index)
+        {
+            for (int i = index; i < length_; i++)
             {
-                char ch = ReadChar();
-                if (ch == '(')
+                char ch = (char)buffer_[i];
+                if (ch == '\\')
                 {
-                    ProcessTree(root);
+                    if (i + 1 < length_)
+                    {
+                        char chAdd1 = (char)buffer_[i + 1];
+                        if (chAdd1 == ']')
+                        {
+                            i++;
+                            continue;
+                        }
+                    }
+                }
+                else if (ch == ']')
+                {
+                    for (int j = i + 1; j < length_; j++)
+                    {
+                        char chAdd1 = (char)buffer_[j];
+                        if (IsUnusedChar(chAdd1))
+                        {
+                            continue;
+                        }
+                        else if (chAdd1 != '[')
+                        {
+                            return i;
+                        }
+                        else
+                        {
+                            return FindToPropertyValueEnd(j);
+                        }
+                    }
                 }
             }
+            return -1;
+        }
+        private bool IsUnusedChar(char ch)
+        {
+            if (ch == ' ' || ch == (char)0x0D || ch == (char)0x0A)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsControlChar(char ch)
+        {
+            if (ch == '(' || ch == ';' || ch == ')')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public char ReadToNextControlChar()
+        {
+            for (int i = index_; i < length_; i++)
+            {
+                char ch = (char)buffer_[index_++];
+                if (IsControlChar(ch))
+                {
+                    return ch;
+                }
+            }
+            return ' ';
         }
 
         public byte ReadByte()
@@ -112,6 +206,12 @@ namespace SGFParser
         public char ReadChar()
         {
             return (char)buffer_[index_++];
+        }
+
+
+        public char PeekCharAt(int index)
+        {
+            return (char)buffer_[index];
         }
 
         public char PeekChar()

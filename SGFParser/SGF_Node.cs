@@ -12,14 +12,19 @@ namespace SGFParser
         private List<SGF_Node> children_ = new List<SGF_Node>();
         private List<SGF_Property> properties_ = new List<SGF_Property>();
 
-        public SGF_Node GetNextNode()
+        public List<SGF_Node> GetChildren()
         {
-            if (children_ == null || children_.Count == 0)
-            {
-                return null;
-            }
-            return children_[0];
+            return children_;
         }
+
+//         public SGF_Node GetNextNode()
+//         {
+//             if (children_ == null || children_.Count == 0)
+//             {
+//                 return null;
+//             }
+//             return children_[0];
+//         }
 
         public void AddNode(SGF_Node node)
         {
@@ -32,13 +37,18 @@ namespace SGFParser
             properties_.Add(property);
         }
 
-        public int GetBranchNumber()
+        public List<SGF_Property> GetProperties()
         {
-            if (children_ != null)
-            {
-                return children_.Count;
-            }
-            return 0;
+            return properties_;
         }
+
+//         public int GetBranchNumber()
+//         {
+//             if (children_ != null)
+//             {
+//                 return children_.Count;
+//             }
+//             return 0;
+//         }
     }
 }

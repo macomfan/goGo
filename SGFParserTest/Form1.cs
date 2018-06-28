@@ -16,16 +16,23 @@ namespace SGFParserTest
         public Form1()
         {
             InitializeComponent();
+            SGF_Parser parser = new SGF_Parser();
+            //parser.OpenSGF(@"C:\DEV\SGF\examples\simple0.sgf");
+            parser.OpenSGF(@"C:\DEV\SGF\examples\ff4_ex.sgf");
+            Read(parser);
         }
 
-        private void ReadTree(SGF_Node node)
+        private void ReadNode(TreeNode treenode, SGF_Node node)
         {
-
-        }
-
-        private void ReadNode(SGF_Node node)
-        {
-
+            TreeNode newtreenode = treenode.Nodes.Add("Node");
+            newtreenode.Tag = node;
+            if (node.GetChildren().Count != 0)
+            {
+                foreach (SGF_Node ch in node.GetChildren())
+                {
+                    ReadNode(newtreenode, ch);
+                }
+            }
         }
 
         private void Read(SGF_Parser parser)
@@ -35,16 +42,28 @@ namespace SGFParserTest
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add("Empty");
             }
+            treeView1.Nodes.Add("ROOT");
+            ReadNode(treeView1.Nodes[0], parser.GetRoot());
         }
-
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SGF_Parser parser = new SGF_Parser();
-            parser.OpenSGF(@"C:\DEV\SGF\examples\simple0.sgf");
 
-            treeView1.Nodes.Add("A");
-            treeView1.Nodes[0].Nodes.Add("B");
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (e.Node.Tag == null)
+            {
+                return;
+            }
+            SGF_Node node = e.Node.Tag as SGF_Node;
+            listView1.Clear();
+            foreach (SGF_Property p in node.GetProperties())
+            {
+                listView1.Items.Add(p.Name + " : " + p.Value);
+            }
+            
         }
     }
 }
