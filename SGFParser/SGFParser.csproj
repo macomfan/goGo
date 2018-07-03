@@ -54,9 +54,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SGF_Node.cs" />
     <Compile Include="SGF_Property.cs" />
-    <Compile Include="SGF_TypeDouble.cs" />
-    <Compile Include="SGF_TypeSimpleText.cs" />
-    <Compile Include="SGF_TypeText.cs" />
+    <Compile Include="SGF_Property_C.cs" />
+    <Compile Include="SGF_Property_Entity.cs" />
+    <Compile Include="SGF_Property_W.cs" />
+    <Compile Include="SGF_TypeBase.cs" />
+    <Compile Include="SGF_Type_Double.cs" />
+    <Compile Include="SGF_Type_SimpleText.cs" />
+    <Compile Include="SGF_Type_Text.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -19,7 +19,6 @@ namespace SGFParserTest
 //             SGFBufferParser test = new SGFBufferParser();
 //             string value = test.TestProcessPropertyValue("[A][B\\]] \r\n[C]  ");
 //             System.Diagnostics.Debug.WriteLine(value);
-
             SGF_Parser parser = new SGF_Parser();
             //parser.OpenSGF(@"C:\DEV\SGF\examples\simple0.sgf");
             parser.OpenSGF(@"C:\DEV\SGF\examples\ff4_ex.sgf");
@@ -30,9 +29,9 @@ namespace SGFParserTest
         {
             TreeNode newtreenode = treenode.Nodes.Add("Node");
             newtreenode.Tag = node;
-            if (node.GetChildren().Count != 0)
+            if (node.Children.Count != 0)
             {
-                foreach (SGF_Node ch in node.GetChildren())
+                foreach (SGF_Node ch in node.Children)
                 {
                     ReadNode(newtreenode, ch);
                 }
@@ -47,7 +46,11 @@ namespace SGFParserTest
                 treeView1.Nodes.Add("Empty");
             }
             treeView1.Nodes.Add("ROOT");
-            ReadNode(treeView1.Nodes[0], parser.GetRoot());
+            foreach (SGF_Node node in parser.GetRoot().Children)
+            {
+                ReadNode(treeView1.Nodes[0], node);
+            }
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -63,7 +66,7 @@ namespace SGFParserTest
             }
             SGF_Node node = e.Node.Tag as SGF_Node;
             listView1.Clear();
-            foreach (SGF_Property p in node.GetProperties())
+            foreach (SGF_Property p in node.Properties)
             {
                 string value = string.Empty;
                 foreach (string s in p.Values)

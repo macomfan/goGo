@@ -33,7 +33,6 @@ namespace SGFParser
             SGFBufferParser reader = new SGFBufferParser(fileReader_);
             root_ = new SGF_Node();
             reader.Parse(root_);
-            //reader.
         }
     }
 }

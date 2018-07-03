@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -10,21 +11,17 @@ namespace SGFParser
     {
         private SGF_Node parent_ = null;
         private List<SGF_Node> children_ = new List<SGF_Node>();
-        private List<SGF_Property> properties_ = new List<SGF_Property>();
+        private Dictionary<String, SGF_Property> properties_ = new Dictionary<String, SGF_Property>();
 
-        public List<SGF_Node> GetChildren()
+        public SGF_Node Parent
         {
-            return children_;
+            get { return parent_; }
         }
 
-//         public SGF_Node GetNextNode()
-//         {
-//             if (children_ == null || children_.Count == 0)
-//             {
-//                 return null;
-//             }
-//             return children_[0];
-//         }
+        public ReadOnlyCollection<SGF_Node> Children
+        {
+            get { return children_.AsReadOnly(); }
+        }
 
         public void AddNode(SGF_Node node)
         {
@@ -34,21 +31,34 @@ namespace SGFParser
 
         public void AddProperty(SGF_Property property)
         {
-            properties_.Add(property);
+            if (property.Name.Length == 0)
+            {
+                // SGFException.Throw("A Property name is NULL");
+            }
+            if (properties_.ContainsKey(property.Name))
+            {
+                // SGFException.Throw("Attempt to add duplicate Property");
+            }
+            properties_.Add(property.Name, property);
         }
 
-        public List<SGF_Property> GetProperties()
+        public ReadOnlyCollection<SGF_Property> Properties
         {
-            return properties_;
+            get
+            {
+                return properties_.Values.ToList().AsReadOnly();
+            }
         }
 
-//         public int GetBranchNumber()
-//         {
-//             if (children_ != null)
-//             {
-//                 return children_.Count;
-//             }
-//             return 0;
-//         }
+        public T GetPropertyAs<T>() where T : SGF_Property_Entity_Base, new()
+        {
+            if (!properties_.ContainsKey(SGF_Property_Entity_Base.Name))
+            {
+                return null;
+            }
+            T t = new T();
+            t.SetValues(properties_[SGF_Property_Entity_Base.Name].Values);
+            return t;
+        }
     }
 }

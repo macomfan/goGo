@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SGFParser
 {
-    class SGF_TypeText
+    class SGF_Type_SimpleText
     {
     }
 }
