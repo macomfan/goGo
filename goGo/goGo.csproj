@@ -52,6 +52,7 @@
     <Compile Include="DataEngine\GoDianType.cs" />
     <Compile Include="DataEngine\GoException.cs" />
     <Compile Include="DataEngine\GoLayout.cs" />
+    <Compile Include="DataEngine\GoMarkType.cs" />
     <Compile Include="DataEngine\GoStar.cs" />
     <Compile Include="DataEngine\GoStep.cs" />
     <Compile Include="Game\FreeMode.cs" />

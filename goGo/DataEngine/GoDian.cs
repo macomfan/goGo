@@ -8,7 +8,8 @@ namespace goGo.DataEngine
     public class GoDian
     {
         private GoCoord coord_ = null;
-        private GoDianType type_;
+        private GoDianType type_ = GoDianType.EMPTY;
+        private GoMarkType mark_ = GoMarkType.NONE;
         private GoLayout parentLayout_ = null;
         private GoBlock block_ = null;
         private GoDianVisitor vistior_ = null;
@@ -52,6 +53,12 @@ namespace goGo.DataEngine
             set { type_ = value; }
         }
 
+        public GoMarkType Make
+        {
+            get { return mark_; }
+            set { mark_ = value; }
+        }
+
         public GoBlock Block
         {
             get { return block_; }
@@ -83,7 +90,7 @@ namespace goGo.DataEngine
             }
         }
 
-        public void MarkAsVisited()
+        public void SetStatusAsVisited()
         {
             status_ = 1;
         }

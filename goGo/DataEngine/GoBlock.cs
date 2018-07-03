@@ -154,24 +154,8 @@ namespace goGo.DataEngine
             }
             else if (newDian.Type == GoDianType.EMPTY)
             {
-                newDian.MarkAsVisited();
+                newDian.SetStatusAsVisited();
                 visitedList_.Add(newDian);
-                //                 if (direction == Direction.UP)
-                //                 {
-                //                     System.Diagnostics.Debug.WriteLine(String.Format("Add Qi ({0},{1}) on UP", mu.Row, mu.Col));
-                //                 }
-                //                 else if (direction == Direction.DOWN)
-                //                 {
-                //                     System.Diagnostics.Debug.WriteLine(String.Format("Add Qi ({0},{1}) on DOWN", mu.Row, mu.Col));
-                //                 }
-                //                 else if (direction == Direction.LEFT)
-                //                 {
-                //                     System.Diagnostics.Debug.WriteLine(String.Format("Add Qi ({0},{1}) on LEFT", mu.Row, mu.Col));
-                //                 }
-                //                 else
-                //                 {
-                //                     System.Diagnostics.Debug.WriteLine(String.Format("Add Qi ({0},{1}) on RIGHT", mu.Row, mu.Col));
-                //                 }
                 qi += 1;
             }
             else if (newDian.Type == dian.Type)
@@ -187,7 +171,7 @@ namespace goGo.DataEngine
             {
                 return 0;
             }
-            dian.MarkAsVisited();
+            dian.SetStatusAsVisited();
             visitedList_.Add(dian);
             int qi = 0;
             qi += CalculateNextQi(dian, dian.UP);
@@ -229,11 +213,6 @@ namespace goGo.DataEngine
         public GoDianType Type
         {
             get { return type_; }
-        }
-
-        public GoDian GetDian()
-        {
-            return null;
         }
     }
 }
