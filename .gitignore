@@ -7,4 +7,6 @@
 /SGFParser/obj/
 /SGFParserTest/bin/
 /SGFParserTest/obj/
+/GoModel/bin/
+/GoModel/obj/
 *.suo

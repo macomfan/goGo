@@ -3,17 +3,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
+    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{24345D3F-62A4-44D8-8D1C-CA18A2DA8208}</ProjectGuid>
+    <ProjectGuid>{481F5BFF-3B16-414C-953F-ED626E9372E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>goTest</RootNamespace>
-    <AssemblyName>goTest</AssemblyName>
+    <RootNamespace>GoModel</RootNamespace>
+    <AssemblyName>GoModel</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,45 +31,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <CodeAnalysisDependentAssemblyPaths Condition=" '$(VS100COMNTOOLS)' != '' " Include="$(VS100COMNTOOLS)..\IDE\PrivateAssemblies">
-      <Visible>False</Visible>
-    </CodeAnalysisDependentAssemblyPaths>
-  </ItemGroup>
-  <ItemGroup>
+    <Compile Include="GoBlock.cs" />
+    <Compile Include="GoCoord.cs" />
+    <Compile Include="GoDian.cs" />
+    <Compile Include="GoDianType.cs" />
+    <Compile Include="GoDianVisitor.cs" />
+    <Compile Include="GoException.cs" />
+    <Compile Include="GoLayout.cs" />
+    <Compile Include="GoMarkType.cs" />
+    <Compile Include="GoStar.cs" />
+    <Compile Include="GoStep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="test.cs" />
-    <Compile Include="testPerformance.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\goGo\goGo.csproj">
-      <Project>{71CA0E66-E744-4F50-B96F-7F9F7594CA7F}</Project>
-      <Name>goGo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GoModel\GoModel.csproj">
-      <Project>{481F5BFF-3B16-414C-953F-ED626E9372E8}</Project>
-      <Name>GoModel</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SGFParser\SGFParser.csproj">
-      <Project>{376DF644-6453-4BD8-A53A-4C6EFE316A2D}</Project>
-      <Name>SGFParser</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Test References\" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

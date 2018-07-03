@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-using goGo.DataEngine;
+using GoModel;
 
 namespace goGo.Painter
 {

@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGFParser", "SGFParser\SGFP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGFParserTest", "SGFParserTest\SGFParserTest.csproj", "{DBCAA190-5338-4EEC-87CB-E33E2B5FD529}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoModel", "GoModel\GoModel.csproj", "{481F5BFF-3B16-414C-953F-ED626E9372E8}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = goGo.vsmdi
@@ -69,6 +71,16 @@ Global
 		{DBCAA190-5338-4EEC-87CB-E33E2B5FD529}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DBCAA190-5338-4EEC-87CB-E33E2B5FD529}.Release|x86.ActiveCfg = Release|x86
 		{DBCAA190-5338-4EEC-87CB-E33E2B5FD529}.Release|x86.Build.0 = Release|x86
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{481F5BFF-3B16-414C-953F-ED626E9372E8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

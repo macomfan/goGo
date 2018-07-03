@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 
-using goGo.DataEngine;
+using GoModel;
 using goGo.Painter;
 using goGo.Game;
 
