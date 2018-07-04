@@ -10,23 +10,37 @@ namespace SGFParser
     public class SGF_Node
     {
         private SGF_Node parent_ = null;
-        private List<SGF_Node> children_ = new List<SGF_Node>();
+        private SGF_Node child_ = null;
+        private List<SGF_Node> stepChildren_ = new List<SGF_Node>();
         private Dictionary<String, SGF_Property> properties_ = new Dictionary<String, SGF_Property>();
+        private Dictionary<String, SGF_Property_Entity_Base> entities_ = new Dictionary<String, SGF_Property_Entity_Base>();
 
         public SGF_Node Parent
         {
             get { return parent_; }
         }
 
-        public ReadOnlyCollection<SGF_Node> Children
+        public SGF_Node Child
         {
-            get { return children_.AsReadOnly(); }
+            get { return child_; }
+        }
+
+        public ReadOnlyCollection<SGF_Node> StepChildren
+        {
+            get { return stepChildren_.AsReadOnly(); }
         }
 
         public void AddNode(SGF_Node node)
         {
             node.parent_ = this;
-            children_.Add(node);
+            if (child_ == null)
+            {
+                child_ = node;
+            }
+            else
+            {
+                stepChildren_.Add(node);
+            }
         }
 
         public void AddProperty(SGF_Property property)
@@ -37,7 +51,7 @@ namespace SGFParser
             }
             if (properties_.ContainsKey(property.Name))
             {
-                // SGFException.Throw("Attempt to add duplicate Property");
+                SGFException.Throw("Attempt to add duplicate Property");
             }
             properties_.Add(property.Name, property);
         }
@@ -50,14 +64,19 @@ namespace SGFParser
             }
         }
 
-        public T GetPropertyAs<T>() where T : SGF_Property_Entity_Base, new()
+        public T GetProperty<T>() where T : SGF_Property_Entity_Base, new()
         {
-            if (!properties_.ContainsKey(SGF_Property_Entity_Base.Name))
-            {
-                return null;
-            }
             T t = new T();
-            t.SetValues(properties_[SGF_Property_Entity_Base.Name].Values);
+            if (entities_.ContainsKey(t.Name))
+            {
+                return entities_[t.Name] as T;
+            }
+            if (!properties_.ContainsKey(t.Name))
+            {
+                return t;
+            }
+            t.SetValues(properties_[t.Name].Values);
+            entities_.Add(t.Name, t);
             return t;
         }
     }

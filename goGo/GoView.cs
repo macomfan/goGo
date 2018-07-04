@@ -72,9 +72,9 @@ namespace goGo
             //e.Graphics.DrawString(string.Format("({0},{1})", x_print, y_print), font, new SolidBrush(Color.Red), new Rectangle(0, 0,100,100));
 
             e.Graphics.TranslateTransform(xOffset_, yOffset_);
-//             cb.DrawBoard(e.Graphics);
-//             cb.DrawSelected(e.Graphics);
-//             cb.DrawLayout(e.Graphics);
+            cb.DrawBoard(e.Graphics);
+            cb.DrawSelected(e.Graphics);
+            cb.DrawLayout(e.Graphics);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)

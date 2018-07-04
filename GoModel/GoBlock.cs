@@ -27,11 +27,11 @@ namespace GoModel
             int index = dian.Coord.GetIndex(size_);
             dianMap_.Add(index, dian);
             dian.Block = this;
+            CleanQi();
             DetectNeighborBlock(dian, dian.UP);
             DetectNeighborBlock(dian, dian.DOWN);
             DetectNeighborBlock(dian, dian.LEFT);
             DetectNeighborBlock(dian, dian.RIGHT);
-            CleanQi();
         }
 
         private bool DetectNeighborBlock(GoDian dian, GoDian nextDian)

@@ -19,6 +19,8 @@ namespace GoModel
         private bool autoTake_ = true;
         private bool allowChangeZi_ = false;
 
+        private Stack<GoStep> steps_ = new Stack<GoStep>();
+
         static GoLayout()
         {
             stars_[0] = new GoStar(3, 3);
@@ -70,12 +72,18 @@ namespace GoModel
             }
         }
 
-        public bool PushStep(GoStep step)
+        public void PushStep(GoStep step)
         {
-            return SetDian(step.Coord, step.Type);
+            steps_.Push(step);
+            SetDian(step.Coord, step.Type);
         }
 
-
+        public bool PopStep()
+        {
+            GoStep step = steps_.Pop();
+            SetDian(step.Coord, GoDianType.EMPTY);
+            return false;
+        }
 
         public static GoStar[] GetStars()
         {
@@ -141,6 +149,7 @@ namespace GoModel
             block.RemoveDian(dian);
             dian.Type = GoDianType.EMPTY;
         }
+
 
         public bool SetDian(GoCoord coord, GoDianType type)
         {

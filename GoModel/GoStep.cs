@@ -9,6 +9,7 @@ namespace GoModel
     {
         private GoCoord coord_ = null;
         private GoDianType type_ = GoDianType.EMPTY;
+        private int id_ = 0;
 
         public GoCoord Coord
         {

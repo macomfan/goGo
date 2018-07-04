@@ -23,18 +23,63 @@ namespace SGFParserTest
             //parser.OpenSGF(@"C:\DEV\SGF\examples\simple0.sgf");
             parser.OpenSGF(@"C:\DEV\SGF\examples\ff4_ex.sgf");
             Read(parser);
+
+            SGF_Node root = parser.GetRoot();
+            SGF_Node node = root.Child;
+            var ff = node.GetProperty<SGF_Property_FF>().Reader;
+            //SGF_Nullable<string> ap = node.GetProperty<SGF_Property_AP>().Reader.Value;
         }
 
-        private void ReadNode(TreeNode treenode, SGF_Node node)
+//         private void ReadNode(TreeNode treenode, SGF_Node node)
+//         {
+//             TreeNode newtreenode = treenode.Nodes.Add("Node");
+//             newtreenode.Tag = node;
+//             if (node.Children.Count != 0)
+//             {
+//                 foreach (SGF_Node ch in node.Children)
+//                 {
+//                     ReadNode(newtreenode, ch);
+//                 }
+//             }
+//         }
+
+        private void AddNode(SGF_Node node, TreeNode treenode)
         {
             TreeNode newtreenode = treenode.Nodes.Add("Node");
             newtreenode.Tag = node;
-            if (node.Children.Count != 0)
+            if (node.Child != null)
             {
-                foreach (SGF_Node ch in node.Children)
+                AddNode(node.Child, treenode);
+            }
+            if (node.StepChildren.Count != 0)
+            {
+                foreach (SGF_Node stepChild in node.StepChildren)
                 {
-                    ReadNode(newtreenode, ch);
+                    AddBranch(stepChild, newtreenode);
                 }
+            }
+        }
+
+        private void AddBranch(SGF_Node node, TreeNode treenode)
+        {
+            TreeNode newtreenode = treenode.Nodes.Add("Branch");
+            newtreenode.Tag = null;
+            AddNode(node, newtreenode);
+        }
+
+        private void AddRoot(SGF_Node root)
+        {
+            treeView1.Nodes.Add("ROOT");
+            if (root.StepChildren.Count != 0)
+            {
+                foreach (SGF_Node stepChild in root.StepChildren)
+                {
+                    AddBranch(stepChild, treeView1.Nodes[0]);
+                }
+            }
+            if (root.Child != null)
+            {
+                AddNode(root.Child, treeView1.Nodes[0]);
             }
         }
 
@@ -44,14 +89,12 @@ namespace SGFParserTest
             {
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add("Empty");
+                return;
             }
-            treeView1.Nodes.Add("ROOT");
-            foreach (SGF_Node node in parser.GetRoot().Children)
-            {
-                ReadNode(treeView1.Nodes[0], node);
-            }
-            
+            AddRoot(parser.GetRoot());
         }
+
+
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -62,6 +105,7 @@ namespace SGFParserTest
         {
             if (e.Node.Tag == null)
             {
+                listView1.Items.Clear();
                 return;
             }
             SGF_Node node = e.Node.Tag as SGF_Node;
@@ -74,8 +118,7 @@ namespace SGFParserTest
                     value += s;
                 }
                 listView1.Items.Add(p.Name + " : " + value);
-            }
-            
+            } 
         }
     }
 }
