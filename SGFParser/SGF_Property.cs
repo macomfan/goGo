@@ -8,7 +8,7 @@ namespace SGFParser
     public class SGF_Property
     {
         private string name_ = string.Empty;
-        private List<string> values_ = new List<string>();
+        private List<byte[]> values_ = new List<byte[]>();
 
         public string Name
         {
@@ -20,12 +20,12 @@ namespace SGFParser
             name_ = name;
         }
 
-        public void AddValue(string value)
+        internal void AddValue(byte[] value)
         {
             values_.Add(value);
         }
 
-        public List<string> Values
+        public List<byte[]> Values
         {
             get { return values_; }
         }

@@ -8,7 +8,8 @@ namespace SGFParser
     public abstract class SGF_Property_Entity_Base
     {
         protected string name_ = string.Empty;
-        protected List<string> values_ = new List<string>();
+        protected SGF_Property bindedProperty_ = null;
+        protected List<byte[]> values_ = new List<byte[]>();
         protected bool isBlank_ = true;
 
         public SGF_Property_Entity_Base(string name)
@@ -29,19 +30,14 @@ namespace SGFParser
             }
         }
 
-        internal void SetValues(List<string> values)
+        public SGF_Property BindedProperty
         {
-            List<string> contents = new List<string>();
-            foreach (string value in values)
-            {
-                int start = value.IndexOf('[');
-                int end = value.LastIndexOf(']');
-                if (start == 0 && end == value.Length - 1)
-                {
-                    contents.Add(value.Substring(start + 1, end - start - 1));
-                }
-            }
-            values_ = new List<string>(contents);
+            get { return bindedProperty_; }
+        }
+
+        internal void BindProperty(SGF_Property property)
+        {
+            values_ = property.Values;
             OnSetValue();
         }
 
@@ -52,17 +48,33 @@ namespace SGFParser
     public class SGF_Property_Entity<T> : SGF_Property_Entity_Base
     {
         private T value_ = default(T);
-        protected delegate T Convertor(List<string> values, string name);
-        protected Convertor convertor_;
-        protected SGF_Property_Entity(string name, Convertor c) : base(name)
+
+        protected delegate T Decoder(List<byte[]> values, string name);
+        protected Decoder decoder_;
+        protected delegate List<byte[]> Encoder(T value, string name);
+        protected Encoder encoder_;
+
+        protected SGF_Property_Entity(string name, Decoder d, Encoder e)
+            : base(name)
         {
-            convertor_ = c;
+            decoder_ = d;
+            encoder_ = e;
         }
 
         protected override void OnSetValue()
         {
-            value_ = convertor_(values_, name_);
+            value_ = decoder_(values_, name_);
             isBlank_ = false;
+        }
+
+        protected void OnValueChange()
+        {
+            if (bindedProperty_ == null)
+            {
+                return;
+            }
+            bindedProperty_.Values.Clear();
+            bindedProperty_.Values.AddRange(encoder_(value_, name_));
         }
 
         public T Value
@@ -75,13 +87,19 @@ namespace SGFParser
                 }
                 return value_;
             }
+            set 
+            {
+                value_ = value;
+                isBlank_ = false;
+                OnValueChange();
+            }
         }
     }
 
     public class SGF_Property_C : SGF_Property_Entity<string>
     {
         public SGF_Property_C()
-            : base("C", SGF_Type_Convertor.ConvertFromSimpleText)
+            : base("C", SGF_Type_Convertor.SimpleText.Decode, SGF_Type_Convertor.SimpleText.Encode)
         {
         }
     }
@@ -89,7 +107,7 @@ namespace SGFParser
     public class SGF_Property_FF : SGF_Property_Entity<int>
     {
         public SGF_Property_FF()
-            : base("FF", SGF_Type_Convertor.ConvertFromNumber)
+            : base("FF", SGF_Type_Convertor.Number.Decode, SGF_Type_Convertor.Number.Encode)
         {
         }
     }
@@ -97,16 +115,16 @@ namespace SGFParser
     public class SGF_Property_AP : SGF_Property_Entity<string>
     {
         public SGF_Property_AP()
-            : base("AP", SGF_Type_Convertor.ConvertFromSimpleText)
+            : base("AP", SGF_Type_Convertor.SimpleText.Decode, SGF_Type_Convertor.SimpleText.Encode)
         {
-
+            
         }
     }
 
     public class SGF_Property_W : SGF_Property_Entity<string>
     {
         public SGF_Property_W()
-            : base("W", SGF_Type_Convertor.ConvertFromText)
+            : base("W", SGF_Type_Convertor.Text.Decode, SGF_Type_Convertor.Text.Encode)
         {
 
         }

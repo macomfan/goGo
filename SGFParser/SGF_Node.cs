@@ -43,7 +43,7 @@ namespace SGFParser
             }
         }
 
-        public void AddProperty(SGF_Property property)
+        internal void AddProperty(SGF_Property property)
         {
             if (property.Name.Length == 0)
             {
@@ -54,6 +54,23 @@ namespace SGFParser
                 SGFException.Throw("Attempt to add duplicate Property");
             }
             properties_.Add(property.Name, property);
+        }
+
+        public void AddProperty(SGF_Property_Entity_Base entity)
+        {
+            if (entity.BindedProperty != null)
+            {
+                SGFException.Throw("BindedProperty");
+            }
+//             if (property.Name.Length == 0)
+//             {
+//                 // SGFException.Throw("A Property name is NULL");
+//             }
+//             if (properties_.ContainsKey(property.Name))
+//             {
+//                 SGFException.Throw("Attempt to add duplicate Property");
+//             }
+//             properties_.Add(property.Name, property);
         }
 
         public ReadOnlyCollection<SGF_Property> Properties
@@ -75,7 +92,7 @@ namespace SGFParser
             {
                 return t;
             }
-            t.SetValues(properties_[t.Name].Values);
+            t.BindProperty(properties_[t.Name]);
             entities_.Add(t.Name, t);
             return t;
         }

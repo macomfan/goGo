@@ -29,24 +29,16 @@ namespace SGFParserTest
             var ff = node.GetPropertyAs<SGF_Property_FF>();
             if (!ff.IsBlank)
             {
-                int a = ff.Value;
+                ff.Value = 3;
             }
-            parser.SaveSGF(@"C:\DEV\SGF\examples\new.sgf");
-            //SGF_Nullable<string> ap = node.GetProperty<SGF_Property_AP>().Reader.Value;
-        }
 
-//         private void ReadNode(TreeNode treenode, SGF_Node node)
-//         {
-//             TreeNode newtreenode = treenode.Nodes.Add("Node");
-//             newtreenode.Tag = node;
-//             if (node.Children.Count != 0)
-//             {
-//                 foreach (SGF_Node ch in node.Children)
-//                 {
-//                     ReadNode(newtreenode, ch);
-//                 }
-//             }
-//         }
+            {
+                SGF_Property_FF ff1 = new SGF_Property_FF();
+                ff1.Value = 4;
+            }
+            
+            parser.SaveSGF(@"C:\DEV\SGF\examples\new.sgf");
+        }
 
         private void AddNode(SGF_Node node, TreeNode treenode)
         {
@@ -118,12 +110,12 @@ namespace SGFParserTest
             foreach (SGF_Property p in node.Properties)
             {
                 string value = string.Empty;
-                foreach (string s in p.Values)
+                foreach (byte[] s in p.Values)
                 {
-                    value += s;
+                    value += Encoding.Default.GetString(s);
                 }
                 listView1.Items.Add(p.Name + " : " + value);
-            } 
+            }
         }
     }
 }

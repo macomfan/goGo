@@ -62,6 +62,10 @@ namespace SGFParser
             {
                 result.AddRange(System.Text.Encoding.ASCII.GetBytes(property.Name));
                 result.Add((byte)'[');
+                foreach (byte[] value in property.Values)
+                {
+                    result.AddRange(value);
+                }
                 result.Add((byte)']');
             }
             if (node.StepChildren.Count == 0)
@@ -161,9 +165,13 @@ namespace SGFParser
             do
             {
                 int indexPropertyValueEnd = FindNextPropertyValueEnd();
-                char[] value = ReadChars(indexPropertyValueEnd - index_ + 1);
-                string valueString = new string(value);
-                property.AddValue(valueString);
+                byte[] value = ReadBytes(indexPropertyValueEnd - index_ + 1);
+                if (value.Length > 2 && value[0] == (byte)'[' && value[value.Length -1] == (byte)']')
+                {
+                    byte[] realValue = new byte[value.Length - 2];
+                    Buffer.BlockCopy(value, 1, realValue, 0, realValue.Length);
+                    property.AddValue(realValue);
+                }
                 while (!EOF)
                 {
                     char ch = PeekChar();
@@ -203,8 +211,8 @@ namespace SGFParser
                 {
                     break;
                 }
-                char[] name = ReadChars(indexPropertyValueStart - index_);
-                string nameString = new string(name);
+                byte[] name = ReadBytes(indexPropertyValueStart - index_);
+                string nameString = Encoding.ASCII.GetString(name);
                 SGF_Property propertry = new SGF_Property(nameString);
                 ProcessPropertyValue(propertry);
                 newNode.AddProperty(propertry);
@@ -286,19 +294,16 @@ namespace SGFParser
             return (char)buffer_[index_];
         }
 
-        private char[] ReadChars(int count)
+        private byte[] ReadBytes(int count)
         {
             if (index_ + count > length_)
             {
                 SGFException.Throw("out of bounds");
             }
-            char[] chars = new char[count];
-            for (int i = 0; i < count; i++)
-            {
-                chars[i] = (char)buffer_[i + index_];
-            }
+            byte[] result = new byte[count];
+            Buffer.BlockCopy(buffer_, index_, result, 0, count);
             index_ += count;
-            return chars;
+            return result;
         }
 #endregion
 
