@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -9,7 +10,6 @@ namespace SGFParser
 {
     public class SGF_Tree
     {
-        private FileStream fileReader_ = null;
         private SGF_Node root_ = null;
 
         private byte[] buffer_ = null;
@@ -27,24 +27,82 @@ namespace SGFParser
             return root_;
         }
 
+        public void SaveSGF(string filename)
+        {
+            FileStream filewriter = new FileStream(filename, FileMode.OpenOrCreate);
+            List<byte> result = new List<byte>();
+            result.AddRange(PersistTree(root_.Child));
+            foreach (SGF_Node node in root_.StepChildren)
+            {
+                result.AddRange(PersistTree(node));
+            }
+            filewriter.Write(result.ToArray(), 0, result.Count);
+        }
+
+        private List<byte> PersistTree(SGF_Node node)
+        {
+            List<byte> result = new List<byte>();
+            result.Add((byte)'(');
+            result.AddRange(PersistNode(node));
+            foreach (SGF_Node stepNode in node.StepChildren)
+            {
+                result.AddRange(PersistTree(stepNode));
+            }
+            result.Add((byte)')');
+            result.Add((byte)'\n');
+            return result;
+        }
+
+
+        private List<byte> PersistNode(SGF_Node node)
+        {
+            List<byte> result = new List<byte>();
+            result.Add((byte)';');
+            foreach (SGF_Property property in node.Properties)
+            {
+                result.AddRange(System.Text.Encoding.ASCII.GetBytes(property.Name));
+                result.Add((byte)'[');
+
+                result.Add((byte)']');
+            }
+            if (node.StepChildren.Count == 0)
+            {
+                if (node.Child != null)
+                {
+                    result.AddRange(PersistNode(node.Child));
+                }
+            }
+            else
+            {
+                result.AddRange(PersistTree(node.Child));
+                foreach (SGF_Node stepNode in node.StepChildren)
+                {
+                    result.AddRange(PersistTree(stepNode));
+                }
+            }
+            return result;
+        }
+
+#region Reader
         public void OpenSGF(string filename)
         {
             if (!File.Exists(filename))
             {
                 SGFException.Throw("The file: " + filename + "cannot be found");
             }
-            fileReader_ = new FileStream(filename, FileMode.Open);
+            FileStream fileReader = new FileStream(filename, FileMode.Open);
 
-            if (fileReader_.Length > int.MaxValue)
+            if (fileReader.Length > int.MaxValue)
             {
                 SGFException.Throw("The file is too large, not supported");
             }
-            buffer_ = new byte[fileReader_.Length];
-            length_ = (int)fileReader_.Length;
+            buffer_ = new byte[fileReader.Length];
+            length_ = (int)fileReader.Length;
             index_ = 0;
-            fileReader_.Read(buffer_, 0, length_);
+            fileReader.Read(buffer_, 0, length_);
             root_ = new SGF_Node();
             Parse(root_);
+            buffer_ = null;
         }
 
         private void ProcessTree(SGF_Node parent)
@@ -243,6 +301,7 @@ namespace SGFParser
             index_ += count;
             return chars;
         }
+#endregion
 
         private bool EOF
         {
