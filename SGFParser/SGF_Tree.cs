@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace SGFParser
 {
-    public class SGF_Parser
+    public class SGF_Tree
     {
         private FileStream fileReader_ = null;
         private SGF_Node root_ = null;
@@ -16,7 +16,7 @@ namespace SGFParser
         private int index_ = 0;
         private int length_ = 0;
 
-        public SGF_Parser()
+        public SGF_Tree()
         {
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             string str = version.ToString();
@@ -47,7 +47,7 @@ namespace SGFParser
             Parse(root_);
         }
 
-        public void ProcessTree(SGF_Node parent)
+        private void ProcessTree(SGF_Node parent)
         {
             SGF_Node currentNode = parent;
             while (!EOF)
@@ -104,7 +104,7 @@ namespace SGFParser
             do
             {
                 int indexPropertyValueEnd = FindNextPropertyValueEnd();
-                char[] value = ReadChars(indexPropertyValueEnd - Index + 1);
+                char[] value = ReadChars(indexPropertyValueEnd - index_ + 1);
                 string valueString = new string(value);
                 property.AddValue(valueString);
                 while (!EOF)
@@ -125,7 +125,7 @@ namespace SGFParser
             return;
         }
 
-        public SGF_Node ProcessNode(SGF_Node parent)
+        private SGF_Node ProcessNode(SGF_Node parent)
         {
             SGF_Node newNode = new SGF_Node();
             parent.AddNode(newNode);
@@ -146,7 +146,7 @@ namespace SGFParser
                 {
                     break;
                 }
-                char[] name = ReadChars(indexPropertyValueStart - Index);
+                char[] name = ReadChars(indexPropertyValueStart - index_);
                 string nameString = new string(name);
                 SGF_Property propertry = new SGF_Property(nameString);
                 ProcessPropertyValue(propertry);
@@ -155,7 +155,7 @@ namespace SGFParser
             return newNode;
         }
 
-        public void Parse(SGF_Node root)
+        private void Parse(SGF_Node root)
         {
             while (!EOF)
             {
@@ -206,7 +206,7 @@ namespace SGFParser
             return false;
         }
 
-        public char ReadToNextControlChar()
+        private char ReadToNextControlChar()
         {
             for (int i = index_; i < length_; i++)
             {
@@ -219,17 +219,17 @@ namespace SGFParser
             return ' ';
         }
 
-        public char ReadChar()
+        private char ReadChar()
         {
             return (char)buffer_[index_++];
         }
 
-        public char PeekChar()
+        private char PeekChar()
         {
             return (char)buffer_[index_];
         }
 
-        public char[] ReadChars(int count)
+        private char[] ReadChars(int count)
         {
             if (index_ + count > length_)
             {
@@ -244,14 +244,9 @@ namespace SGFParser
             return chars;
         }
 
-        public bool EOF
+        private bool EOF
         {
             get { return index_ >= length_; }
-        }
-
-        public int Index
-        {
-            get { return index_; }
         }
     }
 }

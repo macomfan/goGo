@@ -19,7 +19,7 @@ namespace SGFParserTest
 //             SGFBufferParser test = new SGFBufferParser();
 //             string value = test.TestProcessPropertyValue("[A][B\\]] \r\n[C]  ");
 //             System.Diagnostics.Debug.WriteLine(value);
-            SGF_Parser parser = new SGF_Parser();
+            SGF_Tree parser = new SGF_Tree();
             //parser.OpenSGF(@"C:\DEV\SGF\examples\simple0.sgf");
             parser.OpenSGF(@"C:\DEV\SGF\examples\ff4_ex.sgf");
             Read(parser);
@@ -83,7 +83,7 @@ namespace SGFParserTest
             }
         }
 
-        private void Read(SGF_Parser parser)
+        private void Read(SGF_Tree parser)
         {
             if (parser == null || parser.GetRoot() == null)
             {

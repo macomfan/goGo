@@ -49,7 +49,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SGFException.cs" />
-    <Compile Include="SGF_Nullable.cs" />
     <Compile Include="SGF_Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SGF_Node.cs" />
