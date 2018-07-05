@@ -26,7 +26,11 @@ namespace SGFParserTest
 
             SGF_Node root = parser.GetRoot();
             SGF_Node node = root.Child;
-            var ff = node.GetProperty<SGF_Property_FF>().Reader;
+            var ff = node.GetPropertyAs<SGF_Property_FF>();
+            if (!ff.IsBlank)
+            {
+                int a = ff.Value;
+            }
             parser.SaveSGF(@"C:\DEV\SGF\examples\new.sgf");
             //SGF_Nullable<string> ap = node.GetProperty<SGF_Property_AP>().Reader.Value;
         }

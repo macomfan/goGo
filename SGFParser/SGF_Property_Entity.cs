@@ -5,10 +5,11 @@ using System.Text;
 
 namespace SGFParser
 {
-    public class SGF_Property_Entity_Base
+    public abstract class SGF_Property_Entity_Base
     {
         protected string name_ = string.Empty;
         protected List<string> values_ = new List<string>();
+        protected bool isBlank_ = true;
 
         public SGF_Property_Entity_Base(string name)
         {
@@ -20,20 +21,15 @@ namespace SGFParser
             get { return name_; }
         }
 
-        public List<string> Values
-        {
-            get { return values_; }
-        }
-
         public bool IsBlank
         {
             get
             {
-                return values_.Count == 0;
+                return isBlank_;
             }
         }
 
-        public void SetValues(List<string> values)
+        internal void SetValues(List<string> values)
         {
             List<string> contents = new List<string>();
             foreach (string value in values)
@@ -46,64 +42,71 @@ namespace SGFParser
                 }
             }
             values_ = new List<string>(contents);
+            OnSetValue();
         }
+
+        protected abstract void OnSetValue();
     }
 
 
-    public class SGF_Property_Entity<T> : SGF_Property_Entity_Base where T : SGF_TypeBase, new()
+    public class SGF_Property_Entity<T> : SGF_Property_Entity_Base
     {
-        private T reader_ = null;
-
-        public SGF_Property_Entity(string name) : base(name)
+        private T value_ = default(T);
+        protected delegate T Convertor(List<string> values, string name);
+        protected Convertor convertor_;
+        protected SGF_Property_Entity(string name, Convertor c) : base(name)
         {
-
+            convertor_ = c;
         }
 
-        public T Reader
+        protected override void OnSetValue()
+        {
+            value_ = convertor_(values_, name_);
+            isBlank_ = false;
+        }
+
+        public T Value
         {
             get
             {
-                if (reader_ == null)
+                if (isBlank_)
                 {
-                    reader_ = new T();
-                    reader_.SetProperty(this);
+                    SGFException.Throw("Attempt to query a blank property");
                 }
-                return reader_;
+                return value_;
             }
         }
     }
 
-    public class SGF_Property_C : SGF_Property_Entity<SGF_Type_Text>
+    public class SGF_Property_C : SGF_Property_Entity<string>
     {
         public SGF_Property_C()
-            : base("C")
+            : base("C", SGF_Type_Convertor.ConvertFromSimpleText)
         {
-
         }
     }
 
-    public class SGF_Property_FF : SGF_Property_Entity<SGF_Type_Number>
+    public class SGF_Property_FF : SGF_Property_Entity<int>
     {
         public SGF_Property_FF()
-            : base("FF")
+            : base("FF", SGF_Type_Convertor.ConvertFromNumber)
         {
-
         }
     }
 
-    public class SGF_Property_AP : SGF_Property_Entity<SGF_Type_SimpleText>
+    public class SGF_Property_AP : SGF_Property_Entity<string>
     {
         public SGF_Property_AP()
-            : base("AP")
+            : base("AP", SGF_Type_Convertor.ConvertFromSimpleText)
         {
 
         }
     }
 
-    public class SGF_Property_W : SGF_Property_Entity<SGF_Type_Text>
+    public class SGF_Property_W : SGF_Property_Entity<string>
     {
         public SGF_Property_W()
-            : base("W")
+            : base("W", SGF_Type_Convertor.ConvertFromText)
         {
 
         }

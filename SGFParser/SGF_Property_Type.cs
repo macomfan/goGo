@@ -30,163 +30,74 @@ namespace SGFParser
         }
     }
 
-    public abstract class SGF_TypeBase
+    public static class SGF_Type_Convertor
     {
-        protected bool isBlank_ = false;
-
-        protected SGF_Property_Entity_Base property_ = null;
-
-        protected abstract void OnSetValue();
-
-        public void SetProperty(SGF_Property_Entity_Base property)
+        public static int ConvertFromDouble(List<string> values, string propertyName)
         {
-            property_ = property;
-            OnSetValue();
-        }
-
-        public bool IsBlank
-        {
-            get { return isBlank_; }
-        }
-    }
-
-    public class SGF_Type_Double : SGF_TypeBase
-    {
-        private int value_ = 0;
-
-        public SGF_Type_Double()
-        {
-
-        }
-
-        protected override void OnSetValue()
-        {
-            if (property_.Values.Count > 1)
+            if (values.Count == 1 )
             {
-                SGFException.Throw(string.Format("The Double type has multi values in {0}", property_.Name));
+                return int.Parse(values[0]);
             }
-            if (property_.Values.Count != 0 )
+            else if (values.Count > 1)
             {
-                value_ = int.Parse(property_.Values[0]);
-                isBlank_ = false;
+                SGFException.Throw(string.Format("The Double type has multi values in {0}", propertyName));
             }
+            else
+            {
+                SGFException.Throw(string.Format("Attempt convert a null property in {0}", propertyName));
+            }
+            return 0;
         }
 
-        public int Value
+        public static int ConvertFromNumber(List<string> values, string propertyName)
         {
-            get
+            if (values.Count == 1 )
             {
-                if (isBlank_)
-                {
-                    SGFException.Throw("Attempt to query a blank property");
-                }
-                return value_;
+                return int.Parse(values[0]);
             }
-        }
-    }
-
-    public class SGF_Type_Number : SGF_TypeBase
-    {
-        private int value_ = 0;
-
-        public SGF_Type_Number()
-        {
-
+            else if (values.Count > 1)
+            {
+                SGFException.Throw(string.Format("The Number type has multi values in {0}", propertyName));
+            }
+            else
+            {
+                SGFException.Throw(string.Format("Attempt convert a null property in {0}", propertyName));
+            }
+            return 0;
         }
 
-        protected override void OnSetValue()
+        public static string ConvertFromSimpleText(List<string> values, string propertyName)
         {
-            if (property_.Values.Count > 1)
+            if (values.Count == 1 )
             {
-                SGFException.Throw(string.Format("The Number type has multi values in {0}", property_.Name));
+                return TextUtil.Escaping(values[0]);
             }
-            if (property_.Values.Count != 0)
+            else if (values.Count > 1)
             {
-                value_ = int.Parse(property_.Values[0]);
-                isBlank_ = false;
+                SGFException.Throw(string.Format("The SimpleText type has multi values in {0}", propertyName));
             }
+            else
+            {
+                SGFException.Throw(string.Format("Attempt convert a null property in {0}", propertyName));
+            }
+            return string.Empty;
         }
 
-        public int Value
+        public static string ConvertFromText(List<string> values, string propertyName)
         {
-            get
+            if (values.Count == 1)
             {
-                if (isBlank_)
-                {
-                    SGFException.Throw("Attempt to query a blank property");
-                }
-                return value_;
+                return TextUtil.Escaping(values[0]);
             }
-        }
-    }
-
-    public class SGF_Type_SimpleText : SGF_TypeBase
-    {
-        private string value_ = string.Empty;
-
-        public SGF_Type_SimpleText()
-        {
-
-        }
-
-        protected override void OnSetValue()
-        {
-            if (property_.Values.Count > 1)
+            else if (values.Count > 1)
             {
-                SGFException.Throw(string.Format("The SimpleText type has multi values in {0}", property_.Name));
+                SGFException.Throw(string.Format("The Text type has multi values in {0}", propertyName));
             }
-            if (property_.Values.Count != 0)
+            else
             {
-                value_ = TextUtil.Escaping(property_.Values[0]);
-                isBlank_ = false;
+                SGFException.Throw(string.Format("Attempt convert a null property in {0}", propertyName));
             }
-        }
-
-        public string Value
-        {
-            get
-            {
-                if (isBlank_)
-                {
-                    SGFException.Throw("Attempt to query a blank property");
-                }
-                return value_;
-            }
-        }
-    }
-
-    public class SGF_Type_Text : SGF_TypeBase
-    {
-        private string value_ = string.Empty;
-
-        public SGF_Type_Text()
-        {
-
-        }
-
-        protected override void OnSetValue()
-        {
-            if (property_.Values.Count > 1)
-            {
-                SGFException.Throw(string.Format("The Text type has multi values in {0}", property_.Name));
-            }
-            if (property_.Values.Count != 0)
-            {
-                value_ = TextUtil.Escaping(property_.Values[0]);
-                isBlank_ = false;
-            }
-        }
-
-        public string Value
-        {
-            get
-            {
-                if (isBlank_)
-                {
-                    SGFException.Throw("Attempt to query a blank property");
-                }
-                return value_;
-            }
+            return string.Empty;
         }
     }
 }

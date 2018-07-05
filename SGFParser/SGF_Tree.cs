@@ -62,7 +62,6 @@ namespace SGFParser
             {
                 result.AddRange(System.Text.Encoding.ASCII.GetBytes(property.Name));
                 result.Add((byte)'[');
-
                 result.Add((byte)']');
             }
             if (node.StepChildren.Count == 0)

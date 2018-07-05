@@ -64,7 +64,7 @@ namespace SGFParser
             }
         }
 
-        public T GetProperty<T>() where T : SGF_Property_Entity_Base, new()
+        public T GetPropertyAs<T>() where T : SGF_Property_Entity_Base, new()
         {
             T t = new T();
             if (entities_.ContainsKey(t.Name))
