@@ -42,9 +42,9 @@
   <ItemGroup>
     <Compile Include="GoBlock.cs" />
     <Compile Include="GoCoord.cs" />
-    <Compile Include="GoDian.cs" />
-    <Compile Include="GoDianType.cs" />
-    <Compile Include="GoDianVisitor.cs" />
+    <Compile Include="GoPoint.cs" />
+    <Compile Include="GoPointType.cs" />
+    <Compile Include="GoPointVisitor.cs" />
     <Compile Include="GoException.cs" />
     <Compile Include="GoLayout.cs" />
     <Compile Include="GoMarkType.cs" />

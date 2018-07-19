@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GoModel
 {
-    public class GoDianVisitor
+    public class GoPointVisitor
     {
         public enum Direction
         {
@@ -18,12 +18,12 @@ namespace GoModel
         private GoLayout layout_ = null;
 
 
-        public GoDianVisitor(GoLayout layout)
+        public GoPointVisitor(GoLayout layout)
         {
             layout_ = layout;
         }
 
-        public GoDian GetDianByDirection(GoDian dian, Direction direction)
+        public GoPoint GetPointByDirection(GoPoint dian, Direction direction)
         {
             int newRow = dian.Coord.Row;
             int newCol = dian.Coord.Col;
@@ -42,7 +42,7 @@ namespace GoModel
                     newCol++;
                     break;
             }
-            return layout_.GetDian(new GoCoord(newRow, newCol));
+            return layout_.GetPoint(new GoCoord(newRow, newCol));
         }
     }
 }

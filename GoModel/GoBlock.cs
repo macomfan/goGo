@@ -10,12 +10,12 @@ namespace GoModel
         static int mainid = 0;
         private int ID = 0; //For Test
         private int size_ = 0;
-        private GoDianType type_ = GoDianType.EMPTY;
-        private Dictionary<int, GoDian> dianMap_ = new Dictionary<int, GoDian>();
+        private GoPointType type_ = GoPointType.EMPTY;
+        private Dictionary<int, GoPoint> dianMap_ = new Dictionary<int, GoPoint>();
         private int qi_ = -1;
-        private List<GoDian> visitedList_ = new List<GoDian>();
+        private List<GoPoint> visitedList_ = new List<GoPoint>();
 
-        public GoBlock(int size, GoDian dian)
+        public GoBlock(int size, GoPoint dian)
         {
             size_ = size;
             type_ = dian.Type;
@@ -34,9 +34,9 @@ namespace GoModel
             DetectNeighborBlock(dian, dian.RIGHT);
         }
 
-        private bool DetectNeighborBlock(GoDian dian, GoDian nextDian)
+        private bool DetectNeighborBlock(GoPoint dian, GoPoint nextDian)
         {
-            if (nextDian == null || nextDian.Type == GoDianType.EMPTY)
+            if (nextDian == null || nextDian.Type == GoPointType.EMPTY)
             {
                 return false;
             }
@@ -67,7 +67,7 @@ namespace GoModel
             {
                 throw new Exception("ERROR: Attempt merge two block under different type");
             }
-            foreach (KeyValuePair<int, GoDian> pair in block.dianMap_)
+            foreach (KeyValuePair<int, GoPoint> pair in block.dianMap_)
             {
                 if (!dianMap_.ContainsKey(pair.Key))
                 {
@@ -82,7 +82,7 @@ namespace GoModel
             block.dianMap_.Clear();
         }
 
-        private void ClearQiOfBlock(GoDian dian)
+        private void ClearQiOfBlock(GoPoint dian)
         {
             if (dian == null || dian.Block == null)
             {
@@ -93,22 +93,22 @@ namespace GoModel
 
         public void Remove()
         {
-            foreach(KeyValuePair<int, GoDian> dian in dianMap_)
+            foreach(KeyValuePair<int, GoPoint> dian in dianMap_)
             {
                 ClearQiOfBlock(dian.Value.UP);
                 ClearQiOfBlock(dian.Value.DOWN);
                 ClearQiOfBlock(dian.Value.LEFT);
                 ClearQiOfBlock(dian.Value.RIGHT);
             }
-            foreach (KeyValuePair<int, GoDian> dian in dianMap_)
+            foreach (KeyValuePair<int, GoPoint> dian in dianMap_)
             {
                 dian.Value.Block = null;
-                dian.Value.Type = GoDianType.EMPTY;
+                dian.Value.Type = GoPointType.EMPTY;
             }
             dianMap_.Clear();
         }
 
-        public bool RemoveDian(GoDian dian)
+        public bool RemoveDian(GoPoint dian)
         {
             if (dian.Type != type_)
             {
@@ -145,14 +145,14 @@ namespace GoModel
             }
         }
 
-        private int CalculateNextQi(GoDian dian, GoDian newDian)
+        private int CalculateNextQi(GoPoint dian, GoPoint newDian)
         {
             int qi = 0;
             if (newDian == null || newDian.IsVisited())
             {
                 return 0;
             }
-            else if (newDian.Type == GoDianType.EMPTY)
+            else if (newDian.Type == GoPointType.EMPTY)
             {
                 newDian.SetStatusAsVisited();
                 visitedList_.Add(newDian);
@@ -165,7 +165,7 @@ namespace GoModel
             return qi;
         }
 
-        private int CalculateCurrentQi(GoDian dian)
+        private int CalculateCurrentQi(GoPoint dian)
         {
             if (dian == null)
             {
@@ -196,9 +196,9 @@ namespace GoModel
             {
                 return;
             }
-            GoDian dian = dianMap_.Values.First();
+            GoPoint dian = dianMap_.Values.First();
             qi_ = CalculateCurrentQi(dian);
-            foreach (GoDian visited in visitedList_)
+            foreach (GoPoint visited in visitedList_)
             {
                 visited.ResetStatus();
             }
@@ -210,7 +210,7 @@ namespace GoModel
             get { return dianMap_.Count; }
         }
 
-        public GoDianType Type
+        public GoPointType Type
         {
             get { return type_; }
         }

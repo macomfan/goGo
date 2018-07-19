@@ -15,7 +15,7 @@ namespace goGo.Painter
         private int size_ = 10;
         private GoCoord coord_ = null;
 
-        private GoDianType type_;
+        private GoPointType type_;
 
         static Pieces()
         {
@@ -34,7 +34,7 @@ namespace goGo.Painter
             get { return coord_; }
         }
 
-        public Pieces(int row, int col, GoDianType type)
+        public Pieces(int row, int col, GoPointType type)
         {
             coord_ = new GoCoord(row, col);
             type_ = type;

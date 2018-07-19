@@ -45,10 +45,10 @@ namespace goGo.Painter
             }
             if (layout_ != null)
             {
-                layout_.DianChanged -= new GoLayout.DianChangedHandler(Layout_DianChanged);
+                layout_.PointChanged -= new GoLayout.PointChangedHandler(Layout_DianChanged);
             }
             layout_ = layout;
-            layout_.DianChanged += new GoLayout.DianChangedHandler(Layout_DianChanged);
+            layout_.PointChanged += new GoLayout.PointChangedHandler(Layout_DianChanged);
             ruler_ = new Ruler(layout.Size);
             Layout_DianChanged();
         }
@@ -64,8 +64,8 @@ namespace goGo.Painter
             {
                 for (int j = 0; j < GoLayout.SIZE; j++)
                 {
-                    GoDian dian = layout_.GetDian(i, j);
-                    if (dian.Type != GoDianType.EMPTY)
+                    GoPoint dian = layout_.GetPoint(i, j);
+                    if (dian.Type != GoPointType.EMPTY)
                     {
                         piecesList_.Add(new Pieces(i, j, dian.Type));
                     }
@@ -185,14 +185,14 @@ namespace goGo.Painter
             Pen inLinePen = new Pen(blackBrush);
             foreach (Pieces pieces in piecesList_)
             {
-                GoDian dian = layout_.GetDian(pieces.Coord.Row, pieces.Coord.Col);
-                if (dian.Type == GoDianType.BLACK)
+                GoPoint dian = layout_.GetPoint(pieces.Coord.Row, pieces.Coord.Col);
+                if (dian.Type == GoPointType.BLACK)
                 {
                     PointF center = GetCenter(pieces.Coord);
                     g.DrawImage(Pieces.black_, center.X - 9, center.Y - 9, 18, 18);
                     //g.FillRectangle(blackBrush, center.X - 5, center.Y - 5, 10, 10);
                 }
-                else if (dian.Type == GoDianType.WHITE)
+                else if (dian.Type == GoPointType.WHITE)
                 {
                     PointF center = GetCenter(pieces.Coord);
                     g.DrawImage(Pieces.white_, center.X - 9, center.Y - 9, 18, 18);

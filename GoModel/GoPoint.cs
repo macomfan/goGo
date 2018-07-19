@@ -5,14 +5,14 @@ using System.Text;
 
 namespace GoModel
 {
-    public class GoDian
+    public class GoPoint
     {
         private GoCoord coord_ = null;
-        private GoDianType type_ = GoDianType.EMPTY;
+        private GoPointType type_ = GoPointType.EMPTY;
         private GoMarkType mark_ = GoMarkType.NONE;
         private GoLayout parentLayout_ = null;
         private GoBlock block_ = null;
-        private GoDianVisitor vistior_ = null;
+        private GoPointVisitor vistior_ = null;
         private byte status_ = 0;
 
         public GoCoord Coord
@@ -20,34 +20,34 @@ namespace GoModel
             get { return coord_; }
         }
 
-        public GoDian UP
+        public GoPoint UP
         {
-            get { return vistior_.GetDianByDirection(this, GoDianVisitor.Direction.UP); }
+            get { return vistior_.GetPointByDirection(this, GoPointVisitor.Direction.UP); }
         }
 
-        public GoDian DOWN
+        public GoPoint DOWN
         {
-            get { return vistior_.GetDianByDirection(this, GoDianVisitor.Direction.DOWN); }
+            get { return vistior_.GetPointByDirection(this, GoPointVisitor.Direction.DOWN); }
         }
 
-        public GoDian LEFT
+        public GoPoint LEFT
         {
-            get { return vistior_.GetDianByDirection(this, GoDianVisitor.Direction.LEFT); }
+            get { return vistior_.GetPointByDirection(this, GoPointVisitor.Direction.LEFT); }
         }
 
-        public GoDian RIGHT
+        public GoPoint RIGHT
         {
-            get { return vistior_.GetDianByDirection(this, GoDianVisitor.Direction.RIGHT); }
+            get { return vistior_.GetPointByDirection(this, GoPointVisitor.Direction.RIGHT); }
         }
 
-        public GoDian(GoCoord coord, GoDianVisitor vistior)
+        public GoPoint(GoCoord coord, GoPointVisitor vistior)
         {
             coord_ = coord;
             vistior_ = vistior;
-            type_ = GoDianType.EMPTY;
+            type_ = GoPointType.EMPTY;
         }
 
-        public GoDianType Type
+        public GoPointType Type
         {
             get { return type_; }
             set { type_ = value; }
@@ -78,13 +78,13 @@ namespace GoModel
         {
             get
             {
-                if (type_ == GoDianType.EMPTY)
+                if (type_ == GoPointType.EMPTY)
                 {
                     return -1;
                 }
                 if (block_ == null)
                 {
-                    throw new Exception("ERROR: Block is NULL for a Dian");
+                    throw new Exception("ERROR: Block is NULL for a Point");
                 }
                 return block_.Qi;
             }

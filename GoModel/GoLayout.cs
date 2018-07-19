@@ -7,15 +7,15 @@ namespace GoModel
 {
     public class GoLayout
     {
-        public delegate void DianChangedHandler();
-        public event DianChangedHandler DianChanged;
+        public delegate void PointChangedHandler();
+        public event PointChangedHandler PointChanged;
 
         public static int SIZE = 19;
         public static int STAR_NUM = 9;
 
-        private GoDian[] layout_ = new GoDian[SIZE * SIZE];
+        private GoPoint[] layout_ = new GoPoint[SIZE * SIZE];
         private static GoStar[] stars_ = new GoStar[STAR_NUM];
-        private GoDianVisitor visitor_ = null;
+        private GoPointVisitor visitor_ = null;
 
         private Stack<GoStep> steps_ = new Stack<GoStep>();
 
@@ -39,25 +39,25 @@ namespace GoModel
 
         public GoLayout()
         {
-            visitor_ = new GoDianVisitor(this);
-            ResetDian();
+            visitor_ = new GoPointVisitor(this);
+            ResetPoint();
         }
 
-        private void ResetDian()
+        private void ResetPoint()
         {
             for (int i = 0; i < SIZE; i++)
             {
                 for (int j = 0; j < SIZE; j++)
                 {
-                    GoDian dian = new GoDian(new GoCoord(i, j), visitor_);
-                    layout_[i * SIZE + j] = dian;
+                    GoPoint point = new GoPoint(new GoCoord(i, j), visitor_);
+                    layout_[i * SIZE + j] = point;
                 }
             }
         }
 
         public void PushStep(GoStep step)
         {
-            GoDian point = OnAddChess(step.Coord, step.Type);
+            GoPoint point = OnAddChess(step.Coord, step.Type);
             OnCheckCapture(point);
             steps_.Push(step);
             OnChessChanged();
@@ -66,7 +66,7 @@ namespace GoModel
         public bool PopStep()
         {
             GoStep step = steps_.Pop();
-            //SetDian(step.Coord, GoDianType.EMPTY);
+
             return false;
         }
 
@@ -75,7 +75,7 @@ namespace GoModel
             if (steps_.Count != 0)
             {
                 steps_.Clear();
-                ResetDian();
+                ResetPoint();
                 OnChessChanged();
             }
         }
@@ -85,12 +85,12 @@ namespace GoModel
             return stars_;
         }
 
-        public GoDian GetDian(int row, int col)
+        public GoPoint GetPoint(int row, int col)
         {
-            return GetDian(new GoCoord(row, col));
+            return GetPoint(new GoCoord(row, col));
         }
 
-        public GoDian GetDian(GoCoord coord)
+        public GoPoint GetPoint(GoCoord coord)
         {
             if (!coord.IsVaild(SIZE))
             {
@@ -99,28 +99,28 @@ namespace GoModel
             return layout_[coord.GetIndex(SIZE)];
         }
 
-        private bool OnCheckCapture(GoDian dian)
+        private bool OnCheckCapture(GoPoint point)
         {
             bool needCapture = false;
-            if (dian.UP != null && dian.UP.Qi == 0)
+            if (point.UP != null && point.UP.Qi == 0)
             {
                 needCapture = true;
-                RemoveBlock(dian.UP.Block);
+                RemoveBlock(point.UP.Block);
             }
-            if (dian.DOWN != null && dian.DOWN.Qi == 0)
+            if (point.DOWN != null && point.DOWN.Qi == 0)
             {
                 needCapture = true;
-                RemoveBlock(dian.DOWN.Block);
+                RemoveBlock(point.DOWN.Block);
             }
-            if (dian.LEFT != null && dian.LEFT.Qi == 0)
+            if (point.LEFT != null && point.LEFT.Qi == 0)
             {
                 needCapture = true;
-                RemoveBlock(dian.LEFT.Block);
+                RemoveBlock(point.LEFT.Block);
             }
-            if (dian.RIGHT != null && dian.RIGHT.Qi == 0)
+            if (point.RIGHT != null && point.RIGHT.Qi == 0)
             {
                 needCapture = true;
-                RemoveBlock(dian.RIGHT.Block);
+                RemoveBlock(point.RIGHT.Block);
             }
             return needCapture;
         }
@@ -134,43 +134,43 @@ namespace GoModel
             block.Remove();
         }
 
-        private void OnRemoveChess(GoDian dian)
+        private void OnRemoveChess(GoPoint point)
         {
-            if (dian.Block == null || dian.Block.DianNumber == 0)
+            if (point.Block == null || point.Block.DianNumber == 0)
             {
                 GoException.Throw("Found an unexpected Dian which Block is NULL or EMPTY");
             }
-            GoBlock block = dian.Block;
-            block.RemoveDian(dian);
-            dian.Type = GoDianType.EMPTY;
+            GoBlock block = point.Block;
+            block.RemoveDian(point);
+            point.Type = GoPointType.EMPTY;
         }
 
-        private GoDian OnAddChess(GoCoord coord, GoDianType type)
+        private GoPoint OnAddChess(GoCoord coord, GoPointType type)
         {
-            GoDian dian = GetDian(coord);
-            if (dian == null)
+            GoPoint point = GetPoint(coord);
+            if (point == null)
             {
                 GoException.Throw("The Coord is out of bounds");
             }
-            else if (dian.Type == type)
+            else if (point.Type == type)
             {
                 // no change
-                return dian;
+                return point;
             }
-            if (dian.Type != GoDianType.EMPTY)
+            if (point.Type != GoPointType.EMPTY)
             {
                 GoException.Throw("Should remove the Chess first");
             }
-            dian.Type = type;
-            dian.Block = new GoBlock(SIZE, dian);
-            return dian;
+            point.Type = type;
+            point.Block = new GoBlock(SIZE, point);
+            return point;
         }
 
         private void OnChessChanged()
         {
-            if (DianChanged != null)
+            if (PointChanged != null)
             {
-                DianChanged();
+                PointChanged();
             }
         }
 
@@ -220,28 +220,23 @@ namespace GoModel
 //             return true;
 //         }
 
-        public bool SetupDian(GoCoord coord, GoDianType type)
+        public bool SetupPoint(GoCoord coord, GoPointType type)
         {
-            GoDian dian = GetDian(coord);
-            if (dian != null && dian.Type != type)
+            GoPoint point = GetPoint(coord);
+            if (point != null && point.Type != type)
             {
-                OnRemoveChess(dian);
+                OnRemoveChess(point);
                 OnAddChess(coord, type);
             }
             return true;
         }
 
-//         public bool SetDian(int row, int col, GoDianType type)
-//         {
-//             return SetDian(new GoCoord(row, col), type);
-//         }
-
         public int GetQi(int row, int col)
         {
-            GoDian dian = GetDian(row, col);
-            if (dian != null && dian.Type != GoDianType.EMPTY)
+            GoPoint point = GetPoint(row, col);
+            if (point != null && point.Type != GoPointType.EMPTY)
             {
-                return dian.Qi;
+                return point.Qi;
             }
             return -1;
         }

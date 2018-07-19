@@ -8,7 +8,7 @@ namespace GoModel
     public class GoStep
     {
         private GoCoord coord_ = null;
-        private GoDianType type_ = GoDianType.EMPTY;
+        private GoPointType type_ = GoPointType.EMPTY;
         private int id_ = 0;
 
         public GoCoord Coord
@@ -16,12 +16,12 @@ namespace GoModel
             get { return coord_; }
         }
 
-        public GoDianType Type
+        public GoPointType Type
         {
             get { return type_; }
         }
 
-        public GoStep(GoCoord coord, GoDianType type)
+        public GoStep(GoCoord coord, GoPointType type)
         {
             coord_ = coord;
             type_ = type;

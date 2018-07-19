@@ -38,11 +38,11 @@ namespace goGo.Game
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    cb_.Layout.SetupDian(coord, GoDianType.BLACK);
+                    cb_.Layout.SetupPoint(coord, GoPointType.BLACK);
                 }
                 else if (e.Button == MouseButtons.Right)
                 {
-                    cb_.Layout.SetupDian(coord, GoDianType.WHITE);
+                    cb_.Layout.SetupPoint(coord, GoPointType.WHITE);
                 }
             }
             return true;

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GoModel
 {
-    public enum GoDianType
+    public enum GoPointType
     {
         EMPTY,
         BLACK,
