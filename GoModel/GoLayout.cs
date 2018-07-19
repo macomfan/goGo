@@ -16,8 +16,6 @@ namespace GoModel
         private GoDian[] layout_ = new GoDian[SIZE * SIZE];
         private static GoStar[] stars_ = new GoStar[STAR_NUM];
         private GoDianVisitor visitor_ = null;
-        private bool autoTake_ = true;
-        private bool allowChangeZi_ = false;
 
         private Stack<GoStep> steps_ = new Stack<GoStep>();
 
@@ -39,29 +37,14 @@ namespace GoModel
             get { return SIZE; }
         }
 
-        public bool AutoTake
-        {
-            get { return autoTake_; }
-            set { autoTake_ = value; }
-        }
-
-        public bool AllowChangeZi
-        {
-            get { return allowChangeZi_; }
-            set { allowChangeZi_ = value; }
-        }
-
-        public void ResetAllStatus()
-        {
-            for (int i = 0; i < SIZE * SIZE; i++)
-            {
-                layout_[i].ResetStatus();
-            }
-        }
-
         public GoLayout()
         {
             visitor_ = new GoDianVisitor(this);
+            ResetDian();
+        }
+
+        private void ResetDian()
+        {
             for (int i = 0; i < SIZE; i++)
             {
                 for (int j = 0; j < SIZE; j++)
@@ -83,6 +66,19 @@ namespace GoModel
             GoStep step = steps_.Pop();
             SetDian(step.Coord, GoDianType.EMPTY);
             return false;
+        }
+
+        public void ClearSteps()
+        {
+            if (steps_.Count != 0)
+            {
+                steps_.Clear();
+                ResetDian();
+                if (DianChanged != null)
+                {
+                    DianChanged();
+                }
+            }
         }
 
         public static GoStar[] GetStars()
@@ -171,17 +167,17 @@ namespace GoModel
             }
             else if (dian.Type != GoDianType.EMPTY)
             {
-                if (!allowChangeZi_)
-                {
-                    //Error need refresh
-                    GoException.Throw("Cannot change chess, should remove it firstly");
-                }
+//                 if (!allowChangeZi_)
+//                 {
+//                     //Error need refresh
+//                     GoException.Throw("Cannot change chess, should remove it firstly");
+//                 }
                 RemoveZi(dian);
             }
             dian.Type = type;
             dian.Block = new GoBlock(SIZE, dian);
-            if (autoTake_)
-            {
+//             if (autoTake_)
+//             {
                 if (dian.Qi == 0 && !CheckTiZi(dian))
                 {
                     RemoveZi(dian);
@@ -191,7 +187,7 @@ namespace GoModel
                 {
                     CheckTiZi(dian);
                 }
-            }
+/*            }*/
 
             if (DianChanged != null)
             {
@@ -203,7 +199,7 @@ namespace GoModel
 
         public bool SetupDian(GoCoord coord, GoDianType type)
         {
-
+            return true;
         }
 
         public bool SetDian(int row, int col, GoDianType type)

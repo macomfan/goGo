@@ -93,7 +93,6 @@ namespace goTest
             SetDianAndCheckQi(layout, 1, 1, GoDianType.BLACK, 4); // no change
             SetDianAndCheckQi(layout, 1, 1, GoDianType.EMPTY, -1); // no change
             SetDianAndCheckQi(layout, 1, 1, GoDianType.WHITE, 4); // change fine
-            layout.AllowChangeZi = true;
             SetDianAndCheckQi(layout, 1, 1, GoDianType.BLACK, 4); // change fine
             CheckVisitStatus(layout);
         }
@@ -141,7 +140,7 @@ namespace goTest
         public void TestCrossQi()
         {
             GoLayout layout = new GoLayout();
-            layout.AutoTake = false;
+
             SetDianAndCheckQi(layout, 0, 0, GoDianType.BLACK, 2);
             SetDianAndCheckQi(layout, 0, 1, GoDianType.WHITE, 2);
             CheckQi(layout, 0, 0, 1);
@@ -164,7 +163,7 @@ namespace goTest
         public void TestTiZi()
         {
             GoLayout layout = new GoLayout();
-            layout.AutoTake = true;
+
             SetDian(layout, 0, 1, GoDianType.BLACK);
             SetDian(layout, 0, 2, GoDianType.BLACK);
             SetDian(layout, 1, 0, GoDianType.BLACK);
@@ -182,7 +181,6 @@ namespace goTest
         public void TestDaoPu()
         {
             GoLayout layout = new GoLayout();
-            layout.AutoTake = true;
             SetDianAndCheckQi(layout, 1, 0, GoDianType.BLACK, 3);
             SetDianAndCheckQi(layout, 0, 1, GoDianType.BLACK, 3);
             SetDianAndCheckQi(layout, 2, 1, GoDianType.BLACK, 4);
