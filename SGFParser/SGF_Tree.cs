@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -10,7 +11,7 @@ namespace SGFParser
 {
     public class SGF_Tree
     {
-        private SGF_Node root_ = null;
+        private List<SGF_Node_Root> roots_ = new List<SGF_Node_Root>();
 
         private byte[] buffer_ = null;
         private int index_ = 0;
@@ -22,19 +23,23 @@ namespace SGFParser
             string str = version.ToString();
         }
 
-        public SGF_Node GetRoot()
+        public SGF_Node_Root[] Roots
         {
-            return root_;
+            get { return roots_.ToArray(); }
         }
 
         public void SaveSGF(string filename)
         {
             FileStream filewriter = new FileStream(filename, FileMode.OpenOrCreate);
             List<byte> result = new List<byte>();
-            result.AddRange(PersistTree(root_.Child));
-            foreach (SGF_Node node in root_.StepChildren)
+            if (roots_.Count == 0)
             {
-                result.AddRange(PersistTree(node));
+                return;
+            }
+            result.AddRange(PersistTree(roots_[0]));
+            for (int i = 1; i < roots_.Count; i++ )
+            {
+                result.AddRange(PersistTree(roots_[i]));
             }
             filewriter.Write(result.ToArray(), 0, result.Count);
         }
@@ -103,12 +108,11 @@ namespace SGFParser
             length_ = (int)fileReader.Length;
             index_ = 0;
             fileReader.Read(buffer_, 0, length_);
-            root_ = new SGF_Node();
-            Parse(root_);
+            Parse();
             buffer_ = null;
         }
 
-        private void ProcessTree(SGF_Node parent)
+        private void ProcessTree(SGF_Node parent, int branchNumber)
         {
             SGF_Node currentNode = parent;
             while (!EOF)
@@ -116,11 +120,11 @@ namespace SGFParser
                 char ch = ReadToNextControlChar();
                 if (ch == ';')
                 {
-                    currentNode = ProcessNode(currentNode);
+                    currentNode = ProcessNode(currentNode, branchNumber);
                 }
                 else if (ch == '(')
                 {
-                    ProcessTree(currentNode);
+                    ProcessTree(currentNode, branchNumber);
                 }
                 else if (ch == ')')
                 {
@@ -190,10 +194,19 @@ namespace SGFParser
             return;
         }
 
-        private SGF_Node ProcessNode(SGF_Node parent)
+        private SGF_Node ProcessNode(SGF_Node parent, int branchNumber)
         {
-            SGF_Node newNode = new SGF_Node();
-            parent.AddNode(newNode);
+            SGF_Node newNode = null;
+            if (parent == null)
+            {
+                newNode = new SGF_Node_Root();
+                roots_.Add(newNode as SGF_Node_Root);
+            }
+            else
+            {
+                newNode = new SGF_Node(roots_[branchNumber]);
+                parent.AddNode(newNode);
+            }
             while (!EOF)
             {
                 char ch = PeekChar();
@@ -220,14 +233,15 @@ namespace SGFParser
             return newNode;
         }
 
-        private void Parse(SGF_Node root)
+        private void Parse()
         {
+            int rootBranchNumber = 0;
             while (!EOF)
             {
                 char ch = ReadToNextControlChar();
                 if (ch == '(')
                 {
-                    ProcessTree(root);
+                    ProcessTree(null, rootBranchNumber++);
                 }
                 else
                 {

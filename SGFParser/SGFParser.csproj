@@ -49,6 +49,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SGFException.cs" />
+    <Compile Include="SGF_Node_Root.cs" />
+    <Compile Include="SGF_Root_Setting.cs" />
     <Compile Include="SGF_Tree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SGF_Node.cs" />

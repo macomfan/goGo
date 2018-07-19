@@ -9,6 +9,13 @@ namespace SGFParser
     {
         private string name_ = string.Empty;
         private List<byte[]> values_ = new List<byte[]>();
+        private SGF_Root_Setting setting_ = null;
+
+        internal SGF_Root_Setting Setting
+        {
+            get { return setting_; }
+            set { setting_ = value; }
+        }
 
         public string Name
         {
@@ -23,6 +30,11 @@ namespace SGFParser
         internal void AddValue(byte[] value)
         {
             values_.Add(value);
+        }
+
+        internal void ClearAllValues()
+        {
+            values_.Clear();
         }
 
         public List<byte[]> Values

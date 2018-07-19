@@ -201,6 +201,11 @@ namespace GoModel
             return true;
         }
 
+        public bool SetupDian(GoCoord coord, GoDianType type)
+        {
+
+        }
+
         public bool SetDian(int row, int col, GoDianType type)
         {
             return SetDian(new GoCoord(row, col), type);

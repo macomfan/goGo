@@ -24,18 +24,24 @@ namespace SGFParserTest
             parser.OpenSGF(@"C:\DEV\SGF\examples\ff4_ex.sgf");
             Read(parser);
 
-            SGF_Node root = parser.GetRoot();
-            SGF_Node node = root.Child;
-            var ff = node.GetPropertyAs<SGF_Property_FF>();
+            SGF_Node_Root[] roots = parser.Roots;
+            SGF_Node_Root root = roots[0];
+            var ff = root.GetPropertyAs<SGF_Property_FF>();
             if (!ff.IsBlank)
             {
-                ff.Value = 3;
+                ff.Value.Number = 3;
             }
-
+            var SZ = root.GetPropertyAs<SGF_Property_SZ>();
+            int szx = SZ.Value.Left.Number;
+            int szy = SZ.Value.Right.Number;
+            SZ.Value.Right.Number = 20;
+            root.SetProperty(SZ);
             {
                 SGF_Property_FF ff1 = new SGF_Property_FF();
-                ff1.Value = 4;
+                ff1.Value.Number = 15;
+                root.SetProperty(ff1);
             }
+
             
             parser.SaveSGF(@"C:\DEV\SGF\examples\new.sgf");
         }
@@ -64,31 +70,32 @@ namespace SGFParserTest
             AddNode(node, newtreenode);
         }
 
-        private void AddRoot(SGF_Node root)
+        private void AddRoot(SGF_Tree tree)
         {
             treeView1.Nodes.Add("ROOT");
-            if (root.StepChildren.Count != 0)
+            SGF_Node_Root[] roots = tree.Roots;
+            if (roots.Length > 1)
             {
-                foreach (SGF_Node stepChild in root.StepChildren)
+                for (int i = 1; i < roots.Length; i++ )
                 {
-                    AddBranch(stepChild, treeView1.Nodes[0]);
+                    AddBranch(roots[i], treeView1.Nodes[0]);
                 }
             }
-            if (root.Child != null)
+            if (roots.Length != 0)
             {
-                AddNode(root.Child, treeView1.Nodes[0]);
+                AddNode(roots[0], treeView1.Nodes[0]);
             }
         }
 
         private void Read(SGF_Tree parser)
         {
-            if (parser == null || parser.GetRoot() == null)
+            if (parser == null || parser.Roots.Length == 0)
             {
                 treeView1.Nodes.Clear();
                 treeView1.Nodes.Add("Empty");
                 return;
             }
-            AddRoot(parser.GetRoot());
+            AddRoot(parser);
         }
 
 

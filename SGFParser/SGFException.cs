@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SGFParser
 {
-    public class SGFException
+    internal class SGFException
     {
         public static void Throw(String message)
         {

@@ -9,11 +9,17 @@ namespace SGFParser
 {
     public class SGF_Node
     {
+        protected SGF_Node_Root rootNote_ = null;
         private SGF_Node parent_ = null;
         private SGF_Node child_ = null;
         private List<SGF_Node> stepChildren_ = new List<SGF_Node>();
         private Dictionary<String, SGF_Property> properties_ = new Dictionary<String, SGF_Property>();
         private Dictionary<String, SGF_Property_Entity_Base> entities_ = new Dictionary<String, SGF_Property_Entity_Base>();
+
+        public SGF_Node(SGF_Node_Root root)
+        {
+            rootNote_ = root;
+        }
 
         public SGF_Node Parent
         {
@@ -43,34 +49,38 @@ namespace SGFParser
             }
         }
 
-        internal void AddProperty(SGF_Property property)
+        internal virtual void AddProperty(SGF_Property property)
         {
             if (property.Name.Length == 0)
             {
-                // SGFException.Throw("A Property name is NULL");
+                SGFException.Throw("A Property name is NULL");
             }
             if (properties_.ContainsKey(property.Name))
             {
                 SGFException.Throw("Attempt to add duplicate Property");
             }
+            property.Setting = rootNote_.Setting;
             properties_.Add(property.Name, property);
         }
 
-        public void AddProperty(SGF_Property_Entity_Base entity)
+        public void SetProperty(SGF_Property_Entity_Base entity)
         {
-            if (entity.BindedProperty != null)
+            SGF_Property property = null;
+            if (properties_.ContainsKey(entity.Name))
             {
-                SGFException.Throw("BindedProperty");
+                property = properties_[entity.Name];
+                property.ClearAllValues();
             }
-//             if (property.Name.Length == 0)
-//             {
-//                 // SGFException.Throw("A Property name is NULL");
-//             }
-//             if (properties_.ContainsKey(property.Name))
-//             {
-//                 SGFException.Throw("Attempt to add duplicate Property");
-//             }
-//             properties_.Add(property.Name, property);
+            else
+            {
+                property = new SGF_Property(entity.Name);
+                AddProperty(property);
+            }
+            List<byte[]> values = entity.ToPropertyValues(rootNote_.Setting);
+            foreach (byte[] value in values)
+            {
+                property.AddValue(value);
+            }
         }
 
         public ReadOnlyCollection<SGF_Property> Properties
