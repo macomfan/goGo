@@ -51,11 +51,11 @@ namespace goTest
                 {
                     if (isBlack)
                     {
-                        layout.SetDian(i, j, GoDianType.BLACK);
+                        layout.SetupDian(new GoCoord(i, j), GoDianType.BLACK);
                     }
                     else
                     {
-                        layout.SetDian(i, j, GoDianType.WHITE);
+                        layout.SetupDian(new GoCoord(i, j), GoDianType.WHITE);
                     }
                     isBlack = !isBlack;
                 }
@@ -65,7 +65,7 @@ namespace goTest
             {
                 for (int j = 0; j < GoLayout.SIZE; j++)
                 {
-                    layout.SetDian(i, j, GoDianType.EMPTY);
+                    layout.SetupDian(new GoCoord(i, j), GoDianType.EMPTY);
                 }
             }
             double timestamp2 = c.Count();

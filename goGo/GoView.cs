@@ -40,10 +40,10 @@ namespace goGo
 //             layout.SetDian(1, 3, GoDianType.WHITE);
 //             layout.SetDian(2, 2, GoDianType.WHITE);
 
-            layout.SetDian(1, 0, GoDianType.BLACK);
-            layout.SetDian(0, 1, GoDianType.BLACK);
-            layout.SetDian(2, 1, GoDianType.BLACK);
-            layout.SetDian(1, 1, GoDianType.WHITE);
+            layout.SetupDian(new GoCoord(1, 2), GoDianType.BLACK);
+            layout.SetupDian(new GoCoord(0, 1), GoDianType.BLACK);
+            layout.SetupDian(new GoCoord(2, 1), GoDianType.BLACK);
+            layout.SetupDian(new GoCoord(1, 1), GoDianType.WHITE);
         }
 
         int x_print;

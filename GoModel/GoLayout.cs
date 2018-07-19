@@ -57,14 +57,16 @@ namespace GoModel
 
         public void PushStep(GoStep step)
         {
+            GoDian point = OnAddChess(step.Coord, step.Type);
+            OnCheckCapture(point);
             steps_.Push(step);
-            SetDian(step.Coord, step.Type);
+            OnChessChanged();
         }
 
         public bool PopStep()
         {
             GoStep step = steps_.Pop();
-            SetDian(step.Coord, GoDianType.EMPTY);
+            //SetDian(step.Coord, GoDianType.EMPTY);
             return false;
         }
 
@@ -74,10 +76,7 @@ namespace GoModel
             {
                 steps_.Clear();
                 ResetDian();
-                if (DianChanged != null)
-                {
-                    DianChanged();
-                }
+                OnChessChanged();
             }
         }
 
@@ -100,30 +99,30 @@ namespace GoModel
             return layout_[coord.GetIndex(SIZE)];
         }
 
-        private bool CheckTiZi(GoDian dian)
+        private bool OnCheckCapture(GoDian dian)
         {
-            bool TiZi = false;
+            bool needCapture = false;
             if (dian.UP != null && dian.UP.Qi == 0)
             {
-                TiZi = true;
+                needCapture = true;
                 RemoveBlock(dian.UP.Block);
             }
             if (dian.DOWN != null && dian.DOWN.Qi == 0)
             {
-                TiZi = true;
+                needCapture = true;
                 RemoveBlock(dian.DOWN.Block);
             }
             if (dian.LEFT != null && dian.LEFT.Qi == 0)
             {
-                TiZi = true;
+                needCapture = true;
                 RemoveBlock(dian.LEFT.Block);
             }
             if (dian.RIGHT != null && dian.RIGHT.Qi == 0)
             {
-                TiZi = true;
+                needCapture = true;
                 RemoveBlock(dian.RIGHT.Block);
             }
-            return TiZi;
+            return needCapture;
         }
 
         private void RemoveBlock(GoBlock block)
@@ -135,7 +134,7 @@ namespace GoModel
             block.Remove();
         }
 
-        private void RemoveZi(GoDian dian)
+        private void OnRemoveChess(GoDian dian)
         {
             if (dian.Block == null || dian.Block.DianNumber == 0)
             {
@@ -146,8 +145,7 @@ namespace GoModel
             dian.Type = GoDianType.EMPTY;
         }
 
-
-        public bool SetDian(GoCoord coord, GoDianType type)
+        private GoDian OnAddChess(GoCoord coord, GoDianType type)
         {
             GoDian dian = GetDian(coord);
             if (dian == null)
@@ -157,55 +155,86 @@ namespace GoModel
             else if (dian.Type == type)
             {
                 // no change
-                return true;
+                return dian;
             }
-            else if (type == GoDianType.EMPTY)
+            if (dian.Type != GoDianType.EMPTY)
             {
-                // Remove Zi
-                RemoveZi(dian);
-                return true;
-            }
-            else if (dian.Type != GoDianType.EMPTY)
-            {
-//                 if (!allowChangeZi_)
-//                 {
-//                     //Error need refresh
-//                     GoException.Throw("Cannot change chess, should remove it firstly");
-//                 }
-                RemoveZi(dian);
+                GoException.Throw("Should remove the Chess first");
             }
             dian.Type = type;
             dian.Block = new GoBlock(SIZE, dian);
-//             if (autoTake_)
-//             {
-                if (dian.Qi == 0 && !CheckTiZi(dian))
-                {
-                    RemoveZi(dian);
-                    return false;
-                }
-                else
-                {
-                    CheckTiZi(dian);
-                }
-/*            }*/
+            return dian;
+        }
 
+        private void OnChessChanged()
+        {
             if (DianChanged != null)
             {
                 DianChanged();
             }
-
-            return true;
         }
+
+//         public bool SetDian(GoCoord coord, GoDianType type)
+//         {
+// 
+//             else if (dian.Type == type)
+//             {
+//                 // no change
+//                 return true;
+//             }
+//             else if (type == GoDianType.EMPTY)
+//             {
+//                 // Remove Zi
+//                 RemoveChess(dian);
+//                 return true;
+//             }
+//             else if (dian.Type != GoDianType.EMPTY)
+//             {
+// //                 if (!allowChangeZi_)
+// //                 {
+// //                     //Error need refresh
+// //                     GoException.Throw("Cannot change chess, should remove it firstly");
+// //                 }
+//                 RemoveChess(dian);
+//             }
+//             dian.Type = type;
+//             dian.Block = new GoBlock(SIZE, dian);
+// //             if (autoTake_)
+// //             {
+//                 if (dian.Qi == 0 && !CheckTiZi(dian))
+//                 {
+//                     RemoveChess(dian);
+//                     return false;
+//                 }
+//                 else
+//                 {
+//                     CheckTiZi(dian);
+//                 }
+// /*            }*/
+// 
+//             if (DianChanged != null)
+//             {
+//                 DianChanged();
+//             }
+// 
+//             return true;
+//         }
 
         public bool SetupDian(GoCoord coord, GoDianType type)
         {
+            GoDian dian = GetDian(coord);
+            if (dian != null && dian.Type != type)
+            {
+                OnRemoveChess(dian);
+                OnAddChess(coord, type);
+            }
             return true;
         }
 
-        public bool SetDian(int row, int col, GoDianType type)
-        {
-            return SetDian(new GoCoord(row, col), type);
-        }
+//         public bool SetDian(int row, int col, GoDianType type)
+//         {
+//             return SetDian(new GoCoord(row, col), type);
+//         }
 
         public int GetQi(int row, int col)
         {

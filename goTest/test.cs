@@ -25,12 +25,12 @@ namespace goTest
 
         public void SetDian(GoLayout layout, int row, int col, GoDianType type)
         {
-            layout.SetDian(new GoCoord(row, col), type);
+            layout.SetupDian(new GoCoord(row, col), type);
         }
 
         public void SetDianAndCheckQi(GoLayout layout, int row, int col, GoDianType type, int qi)
         {
-            layout.SetDian(new GoCoord(row, col), type);
+            layout.SetupDian(new GoCoord(row, col), type);
             Assert.AreEqual(qi, layout.GetQi(row, col));
         }
 
