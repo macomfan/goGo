@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -10,6 +11,7 @@ namespace GoModel
         private GoCoord coord_ = null;
         private GoPointType type_ = GoPointType.EMPTY;
         private int id_ = 0;
+        private List<GoCoord> removedList_ = new List<GoCoord>();
 
         public GoCoord Coord
         {
@@ -25,6 +27,19 @@ namespace GoModel
         {
             coord_ = coord;
             type_ = type;
+        }
+
+        public ReadOnlyCollection<GoCoord> Removed
+        {
+            get
+            {
+                return removedList_.AsReadOnly();
+            }
+        }
+
+        public void SetRemovedList(List<GoCoord> list)
+        {
+            removedList_.AddRange(list);
         }
     }
 }

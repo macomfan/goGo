@@ -23,6 +23,17 @@ namespace goTest
             }
         }
 
+        public void GoStep(GoLayout layout, int row, int col, GoPointType type)
+        {
+            layout.PushStep(new GoStep(new GoCoord(row,col), type));
+        }
+
+        public void GoStepAndCheckQi(GoLayout layout, int row, int col, GoPointType type, int qi)
+        {
+            layout.PushStep(new GoStep(new GoCoord(row, col), type));
+            Assert.AreEqual(qi, layout.GetQi(row, col));
+        }
+
         public void SetDian(GoLayout layout, int row, int col, GoPointType type)
         {
             layout.SetupPoint(new GoCoord(row, col), type);
@@ -79,9 +90,9 @@ namespace goTest
         public void TestChangeZiWithOutChangeMode()
         {
             GoLayout layout = new GoLayout();
-            SetDianAndCheckQi(layout, 1, 1, GoPointType.BLACK, 4);
-            SetDianAndCheckQi(layout, 1, 1, GoPointType.BLACK, 4); // no change
-            SetDianAndCheckQi(layout, 1, 1, GoPointType.WHITE, 4); // change failed
+            GoStepAndCheckQi(layout, 1, 1, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 1, 1, GoPointType.BLACK, 4); // no change
+            GoStepAndCheckQi(layout, 1, 1, GoPointType.WHITE, 4); // change failed
             CheckVisitStatus(layout);
         }
 
@@ -164,14 +175,14 @@ namespace goTest
         {
             GoLayout layout = new GoLayout();
 
-            SetDian(layout, 0, 1, GoPointType.BLACK);
-            SetDian(layout, 0, 2, GoPointType.BLACK);
-            SetDian(layout, 1, 0, GoPointType.BLACK);
-            SetDian(layout, 1, 3, GoPointType.BLACK);
-            SetDian(layout, 1, 1, GoPointType.WHITE);
-            SetDian(layout, 1, 2, GoPointType.WHITE);
-            SetDian(layout, 2, 1, GoPointType.BLACK);
-            SetDian(layout, 2, 2, GoPointType.BLACK);
+            GoStep(layout, 0, 1, GoPointType.BLACK);
+            GoStep(layout, 0, 2, GoPointType.BLACK);
+            GoStep(layout, 1, 0, GoPointType.BLACK);
+            GoStep(layout, 1, 3, GoPointType.BLACK);
+            GoStep(layout, 1, 1, GoPointType.WHITE);
+            GoStep(layout, 1, 2, GoPointType.WHITE);
+            GoStep(layout, 2, 1, GoPointType.BLACK);
+            GoStep(layout, 2, 2, GoPointType.BLACK);
             CheckDian(layout, 1, 1, GoPointType.EMPTY);
             CheckDian(layout, 1, 2, GoPointType.EMPTY);
             CheckVisitStatus(layout);
@@ -181,13 +192,13 @@ namespace goTest
         public void TestDaoPu()
         {
             GoLayout layout = new GoLayout();
-            SetDianAndCheckQi(layout, 1, 0, GoPointType.BLACK, 3);
-            SetDianAndCheckQi(layout, 0, 1, GoPointType.BLACK, 3);
-            SetDianAndCheckQi(layout, 2, 1, GoPointType.BLACK, 4);
-            SetDianAndCheckQi(layout, 1, 2, GoPointType.BLACK, 4);
-            SetDianAndCheckQi(layout, 0, 2, GoPointType.WHITE, 1);
-            SetDianAndCheckQi(layout, 1, 3, GoPointType.WHITE, 3);
-            SetDianAndCheckQi(layout, 2, 2, GoPointType.WHITE, 2);
+            GoStepAndCheckQi(layout, 1, 0, GoPointType.BLACK, 3);
+            GoStepAndCheckQi(layout, 0, 1, GoPointType.BLACK, 3);
+            GoStepAndCheckQi(layout, 2, 1, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 1, 2, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 0, 2, GoPointType.WHITE, 1);
+            GoStepAndCheckQi(layout, 1, 3, GoPointType.WHITE, 3);
+            GoStepAndCheckQi(layout, 2, 2, GoPointType.WHITE, 2);
             CheckQi(layout, 1, 0, 3);
             CheckQi(layout, 0, 1, 2);
             CheckQi(layout, 2, 1, 3);
@@ -196,11 +207,52 @@ namespace goTest
             CheckQi(layout, 1, 3, 3);
             CheckQi(layout, 2, 2, 2);
 
-            SetDianAndCheckQi(layout, 1, 1, GoPointType.WHITE, 1);
+            GoStepAndCheckQi(layout, 1, 1, GoPointType.WHITE, 1);
             CheckDian(layout, 1, 2, GoPointType.EMPTY);
-            SetDianAndCheckQi(layout, 1, 2, GoPointType.BLACK, 1);
+            GoStepAndCheckQi(layout, 1, 2, GoPointType.BLACK, 1);
             CheckDian(layout, 1, 1, GoPointType.EMPTY);
             CheckVisitStatus(layout);
+        }
+
+        [TestMethod]
+        public void TestRollbackStep()
+        {
+            GoLayout layout = new GoLayout();
+            GoStepAndCheckQi(layout, 0, 2, GoPointType.BLACK, 3);
+            GoStepAndCheckQi(layout, 1, 1, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 2, 0, GoPointType.BLACK, 3);
+            GoStepAndCheckQi(layout, 1, 3, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 2, 4, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 3, 1, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 3, 3, GoPointType.BLACK, 4);
+            GoStepAndCheckQi(layout, 4, 2, GoPointType.BLACK, 4);
+
+            GoStepAndCheckQi(layout, 2, 1, GoPointType.WHITE, 1);
+            GoStepAndCheckQi(layout, 1, 2, GoPointType.WHITE, 1);
+            GoStepAndCheckQi(layout, 3, 2, GoPointType.WHITE, 1);
+            GoStepAndCheckQi(layout, 2, 3, GoPointType.WHITE, 1);
+
+            GoStep(layout, 2, 2, GoPointType.BLACK);
+
+            CheckDian(layout, 2, 1, GoPointType.EMPTY);
+            CheckDian(layout, 1, 2, GoPointType.EMPTY);
+            CheckDian(layout, 3, 2, GoPointType.EMPTY);
+            CheckDian(layout, 2, 3, GoPointType.EMPTY);
+            CheckDian(layout, 2, 2, GoPointType.BLACK);
+
+            layout.PopStep();
+
+            CheckDian(layout, 2, 1, GoPointType.WHITE);
+            CheckDian(layout, 1, 2, GoPointType.WHITE);
+            CheckDian(layout, 3, 2, GoPointType.WHITE);
+            CheckDian(layout, 2, 3, GoPointType.WHITE);
+            CheckDian(layout, 2, 2, GoPointType.EMPTY);
+
+//             layout.PopStep();
+//             CheckDian(layout, 2, 1, GoPointType.EMPTY);
+//             CheckDian(layout, 1, 2, GoPointType.EMPTY);
+//             CheckDian(layout, 3, 2, GoPointType.EMPTY);
+//             CheckDian(layout, 2, 3, GoPointType.EMPTY);
         }
     }
 }

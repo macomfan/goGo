@@ -10,7 +10,6 @@ namespace GoModel
         private GoCoord coord_ = null;
         private GoPointType type_ = GoPointType.EMPTY;
         private GoMarkType mark_ = GoMarkType.NONE;
-        private GoLayout parentLayout_ = null;
         private GoBlock block_ = null;
         private GoPointVisitor vistior_ = null;
         private byte status_ = 0;

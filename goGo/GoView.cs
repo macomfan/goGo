@@ -23,6 +23,11 @@ namespace goGo
         GoLayout layout = new GoLayout();
         FreeMode mode = new FreeMode();
 
+        public void GoStep(GoLayout layout, int row, int col, GoPointType type)
+        {
+            layout.PushStep(new GoStep(new GoCoord(row, col), type));
+        }
+
         public GoView()
         {
             cb = new ChessBoard();
@@ -40,10 +45,36 @@ namespace goGo
 //             layout.SetDian(1, 3, GoDianType.WHITE);
 //             layout.SetDian(2, 2, GoDianType.WHITE);
 
-            layout.SetupPoint(new GoCoord(1, 2), GoPointType.BLACK);
-            layout.SetupPoint(new GoCoord(0, 1), GoPointType.BLACK);
-            layout.SetupPoint(new GoCoord(2, 1), GoPointType.BLACK);
-            layout.SetupPoint(new GoCoord(1, 1), GoPointType.WHITE);
+            GoStep(layout, 0, 2, GoPointType.BLACK);
+            GoStep(layout, 1, 1, GoPointType.BLACK);
+            GoStep(layout, 2, 0, GoPointType.BLACK);
+            GoStep(layout, 1, 3, GoPointType.BLACK);
+            GoStep(layout, 2, 4, GoPointType.BLACK);
+            GoStep(layout, 3, 1, GoPointType.BLACK);
+            GoStep(layout, 3, 3, GoPointType.BLACK);
+            GoStep(layout, 4, 2, GoPointType.BLACK);
+
+            GoStep(layout, 2, 1, GoPointType.WHITE);
+            GoStep(layout, 1, 2, GoPointType.WHITE);
+            GoStep(layout, 3, 2, GoPointType.WHITE);
+            GoStep(layout, 2, 3, GoPointType.WHITE);
+
+            GoStep(layout, 2, 2, GoPointType.WHITE);
+
+
+//             layout.SetupPoint(new GoCoord(0, 2), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(1, 1), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(2, 0), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(1, 3), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(2, 4), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(3, 1), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(3, 3), GoPointType.BLACK);
+//             layout.SetupPoint(new GoCoord(4, 2), GoPointType.BLACK);
+// 
+//             layout.SetupPoint(new GoCoord(2, 1), GoPointType.WHITE);
+//             layout.SetupPoint(new GoCoord(1, 2), GoPointType.WHITE);
+//             layout.SetupPoint(new GoCoord(3, 2), GoPointType.WHITE);
+//             layout.SetupPoint(new GoCoord(2, 3), GoPointType.WHITE);
         }
 
         int x_print;

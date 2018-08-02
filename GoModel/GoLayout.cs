@@ -58,7 +58,8 @@ namespace GoModel
         public void PushStep(GoStep step)
         {
             GoPoint point = OnAddChess(step.Coord, step.Type);
-            OnCheckCapture(point);
+            List<GoCoord> removedList = OnCheckCapture(point);
+            step.SetRemovedList(removedList);
             steps_.Push(step);
             OnChessChanged();
         }
@@ -66,7 +67,24 @@ namespace GoModel
         public bool PopStep()
         {
             GoStep step = steps_.Pop();
-
+            GoPoint point = GetPoint(step.Coord);
+            OnRemoveChess(point);
+            if (step.Removed.Count != 0)
+            {
+                GoPointType removedType = GoPointType.EMPTY;
+                if (step.Type == GoPointType.BLACK)
+                {
+                    removedType = GoPointType.WHITE;
+                }
+                else if (step.Type == GoPointType.WHITE)
+                {
+                    removedType = GoPointType.BLACK;
+                }
+                foreach (GoCoord item in step.Removed)
+                {
+                    SetupPoint(item, removedType);
+                }
+            }
             return false;
         }
 
@@ -99,50 +117,45 @@ namespace GoModel
             return layout_[coord.GetIndex(SIZE)];
         }
 
-        private bool OnCheckCapture(GoPoint point)
+        private List<GoCoord> OnCheckCapture(GoPoint point)
         {
-            bool needCapture = false;
+            List<GoCoord> removedList = new List<GoCoord>();
             if (point.UP != null && point.UP.Qi == 0)
             {
-                needCapture = true;
-                RemoveBlock(point.UP.Block);
+                removedList.AddRange(RemoveBlock(point.UP.Block));
             }
             if (point.DOWN != null && point.DOWN.Qi == 0)
             {
-                needCapture = true;
-                RemoveBlock(point.DOWN.Block);
+                removedList.AddRange(RemoveBlock(point.DOWN.Block));
             }
             if (point.LEFT != null && point.LEFT.Qi == 0)
             {
-                needCapture = true;
-                RemoveBlock(point.LEFT.Block);
+                removedList.AddRange(RemoveBlock(point.LEFT.Block));
             }
             if (point.RIGHT != null && point.RIGHT.Qi == 0)
             {
-                needCapture = true;
-                RemoveBlock(point.RIGHT.Block);
+                removedList.AddRange(RemoveBlock(point.RIGHT.Block));
             }
-            return needCapture;
+            return removedList;
         }
 
-        private void RemoveBlock(GoBlock block)
+        private List<GoCoord> RemoveBlock(GoBlock block)
         {
             if (block == null || block.DianNumber == 0)
             {
                 GoException.Throw("Attempt remove a NULL or EMPTY Block");
             }
-            block.Remove();
+            return block.Remove();
         }
 
         private void OnRemoveChess(GoPoint point)
         {
-            if (point.Block == null || point.Block.DianNumber == 0)
+            if (point.Block != null && point.Block.DianNumber != 0)
             {
-                GoException.Throw("Found an unexpected Dian which Block is NULL or EMPTY");
+                GoBlock block = point.Block;
+                block.RemoveDian(point);
+                point.Type = GoPointType.EMPTY;
             }
-            GoBlock block = point.Block;
-            block.RemoveDian(point);
-            point.Type = GoPointType.EMPTY;
         }
 
         private GoPoint OnAddChess(GoCoord coord, GoPointType type)
@@ -227,6 +240,7 @@ namespace GoModel
             {
                 OnRemoveChess(point);
                 OnAddChess(coord, type);
+                OnChessChanged();
             }
             return true;
         }

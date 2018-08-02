@@ -11,6 +11,7 @@ namespace GoModel
         private int ID = 0; //For Test
         private int size_ = 0;
         private GoPointType type_ = GoPointType.EMPTY;
+        // index - point
         private Dictionary<int, GoPoint> dianMap_ = new Dictionary<int, GoPoint>();
         private int qi_ = -1;
         private List<GoPoint> visitedList_ = new List<GoPoint>();
@@ -91,7 +92,7 @@ namespace GoModel
             dian.Block.CleanQi();
         }
 
-        public void Remove()
+        public List<GoCoord> Remove()
         {
             foreach(KeyValuePair<int, GoPoint> dian in dianMap_)
             {
@@ -105,7 +106,13 @@ namespace GoModel
                 dian.Value.Block = null;
                 dian.Value.Type = GoPointType.EMPTY;
             }
+            List<GoCoord> removedList = new List<GoCoord>();
+            foreach (KeyValuePair<int, GoPoint> item in dianMap_)
+            {
+                removedList.Add(item.Value.Coord);
+            }
             dianMap_.Clear();
+            return removedList;
         }
 
         public bool RemoveDian(GoPoint dian)
